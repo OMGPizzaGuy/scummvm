@@ -20,10 +20,10 @@
  *
  */
 
-#include "ultima/ultima8/misc/pent_include.h"
+#include "common/rect.h"
 
+#include "ultima/ultima8/misc/pent_include.h"
 #include "ultima/ultima8/graphics/gump_shape_archive.h"
-#include "ultima/ultima8/misc/rect.h"
 #include "ultima/ultima8/filesys/idata_source.h"
 
 namespace Ultima {
@@ -38,16 +38,16 @@ void GumpShapeArchive::loadGumpage(Common::SeekableReadStream *rs) {
 	unsigned int total = rs->size() / 8;
 	_gumpItemArea.resize(total + 1);
 	for (unsigned int i = 1; i <= total; ++i) {
-		int x, y, w, h;
-		x = static_cast<int16>(rs->readUint16LE());
-		y = static_cast<int16>(rs->readUint16LE());
-		w = static_cast<int16>(rs->readUint16LE()) - x;
-		h = static_cast<int16>(rs->readUint16LE()) - y;
-		_gumpItemArea[i] = new Rect(x, y, w, h);
+		int x1, y1, x2, y2;
+		x1 = static_cast<int16>(rs->readUint16LE());
+		y1 = static_cast<int16>(rs->readUint16LE());
+		x2 = static_cast<int16>(rs->readUint16LE());
+		y2 = static_cast<int16>(rs->readUint16LE());
+		_gumpItemArea[i] = new Common::Rect(x1, y1, x2, y2);
 	}
 }
 
-Rect *GumpShapeArchive::getGumpItemArea(uint32 shapenum) {
+Common::Rect *GumpShapeArchive::getGumpItemArea(uint32 shapenum) {
 	if (shapenum >= _gumpItemArea.size())
 		return nullptr;
 	return _gumpItemArea[shapenum];

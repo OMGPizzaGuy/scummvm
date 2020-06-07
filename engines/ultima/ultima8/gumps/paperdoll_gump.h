@@ -82,7 +82,7 @@ protected:
 
 	uint16 _statButtonId;
 private:
-	const Rect _backpackRect;
+	const Common::Rect _backpackRect;
 };
 
 } // End of namespace Ultima8

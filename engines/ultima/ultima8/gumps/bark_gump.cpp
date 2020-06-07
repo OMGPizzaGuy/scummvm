@@ -88,27 +88,27 @@ void BarkGump::InitGump(Gump *newparent, bool take_focus) {
 
 			// We're playing speech, so need to sync the text with the speech.
 			// First we count the total height of all text blocks.
-			Rect d;
+			Common::Rect d;
 			widget->GetDims(d);
-			_totalTextHeight = d.h;
+			_totalTextHeight = d.height();
 			while (widget->setupNextText()) {
 				widget->GetDims(d);
-				_totalTextHeight += d.h;
+				_totalTextHeight += d.height();
 			}
 			widget->rewind();
 		}
 	}
 
 	// This is just a hack
-	Rect d;
+	Common::Rect d;
 	widget->GetDims(d);
 	if (_speechLength && _totalTextHeight) {
-		_counter = (d.h * _speechLength) / _totalTextHeight;
+		_counter = (d.height() * _speechLength) / _totalTextHeight;
 	} else {
-		_counter = d.h * _textDelay;
+		_counter = d.height() * _textDelay;
 	}
-	_dims.h = d.h;
-	_dims.w = d.w;
+	_dims.setHeight(d.height());
+	_dims.setWidth(d.width());
 
 	// Wait with ItemRelativeGump initialization until we calculated our size.
 	ItemRelativeGump::InitGump(newparent, take_focus);
@@ -119,15 +119,15 @@ bool BarkGump::NextText() {
 	assert(widget);
 	if (widget->setupNextText()) {
 		// This is just a hack
-		Rect d;
+		Common::Rect d;
 		widget->GetDims(d);
 		if (_speechLength && _totalTextHeight) {
-			_counter = (d.h * _speechLength) / _totalTextHeight;
+			_counter = (d.height() * _speechLength) / _totalTextHeight;
 		} else {
-			_counter = d.h * _textDelay;
+			_counter = d.height() * _textDelay;
 		}
-		_dims.h = d.h;
-		_dims.w = d.w;
+		_dims.setHeight(d.height());
+		_dims.setWidth(d.width());
 		return true;
 	}
 
@@ -216,11 +216,11 @@ bool BarkGump::loadData(Common::ReadStream *rs, uint32 version) {
 	SettingManager::get_instance()->get("textdelay", _textDelay);
 
 	// This is just a hack
-	Rect d;
+	Common::Rect d;
 	widget->GetDims(d);
-	_counter = d.h * _textDelay;
-	_dims.h = d.h;
-	_dims.w = d.w;
+	_counter = d.height() * _textDelay;
+	_dims.setHeight(d.height());
+	_dims.setWidth(d.width());
 
 	return true;
 }

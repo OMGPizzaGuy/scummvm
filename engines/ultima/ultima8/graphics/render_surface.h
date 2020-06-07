@@ -35,7 +35,6 @@ class ShapeFont;
 struct FixedWidthFont;
 
 struct Palette;
-struct Rect;
 class Scaler;
 
 #define UNPACK_RGB8(pix,r,g,b) { r = (((pix)&RenderSurface::_format.rMask)>>RenderSurface::_format.rShift)<<RenderSurface::_format.rLoss; g = (((pix)&RenderSurface::_format.gMask)>>RenderSurface::_format.gShift)<<RenderSurface::_format.gLoss; b = (((pix)&RenderSurface::_format.bMask)>>RenderSurface::_format.bShift)<<RenderSurface::_format.bLoss; }
@@ -112,16 +111,16 @@ public:
 	virtual void GetOrigin(int32 &x, int32 &y) const = 0;
 
 	//! Get the Surface Dimensions
-	virtual void GetSurfaceDims(Rect &) const = 0;
+	virtual void GetSurfaceDims(Common::Rect &) const = 0;
 
 	//! Get Clipping Rectangle
-	virtual void GetClippingRect(Rect &) const = 0;
+	virtual void GetClippingRect(Common::Rect &) const = 0;
 
 	//! Set Clipping Rectangle
-	virtual void SetClippingRect(const Rect &) = 0;
+	virtual void SetClippingRect(const Common::Rect &) = 0;
 
 	//! Check Clipped. -1 if off screen, 0 if not clipped, 1 if clipped
-	virtual int16 CheckClipped(const Rect &) const = 0;
+	virtual int16 CheckClipped(const Common::Rect &) const = 0;
 
 	//! Flip the surface
 	virtual void SetFlipped(bool flipped) = 0;

@@ -28,7 +28,6 @@
 #include "ultima/ultima8/graphics/shape_info.h"
 #include "ultima/ultima8/graphics/main_shape_archive.h"
 #include "ultima/ultima8/graphics/render_surface.h"
-#include "ultima/ultima8/misc/rect.h"
 #include "ultima/ultima8/games/game_data.h"
 
 // temp
@@ -684,7 +683,8 @@ void ItemSorter::AddItem(int32 x, int32 y, int32 z, uint32 shapeNum, uint32 fram
 	si->_sy2 = si->_sy + _frame->_height;   // Bottom
 
 	// Do Clipping here
-	si->_clipped = _surf->CheckClipped(Rect(si->_sx, si->_sy, _frame->_width, _frame->_height));
+	Common::Rect rect(si->_sx, si->_sy, si->_sx + _frame->_width, si->_sy + _frame->_height);
+	si->_clipped = _surf->CheckClipped(rect);
 	if (si->_clipped < 0)
 		// Clipped away entirely - don't add to the list.
 		return;

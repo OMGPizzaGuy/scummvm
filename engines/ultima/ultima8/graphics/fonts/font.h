@@ -23,8 +23,8 @@
 #ifndef ULTIMA8_GRAPHICS_FONTS_FONT_H
 #define ULTIMA8_GRAPHICS_FONTS_FONT_H
 
+#include "common/rect.h"
 #include "ultima/shared/std/containers.h"
-#include "ultima/ultima8/misc/rect.h"
 #include "ultima/ultima8/misc/encoding.h"
 #include "ultima/ultima8/misc/p_dynamic_cast.h"
 
@@ -35,7 +35,7 @@ class RenderedText;
 
 struct PositionedText {
 	Std::string _text;
-	Rect _dims;
+	Common::Rect _dims;
 	Std::string::size_type _cursor;
 };
 

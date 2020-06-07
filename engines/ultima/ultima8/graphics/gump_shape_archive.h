@@ -23,13 +23,12 @@
 #ifndef ULTIMA8_GRAPHICS_GUMPSHAPEARCHIVE_H
 #define ULTIMA8_GRAPHICS_GUMPSHAPEARCHIVE_H
 
+#include "common/rect.h"
 #include "ultima/ultima8/graphics/shape_archive.h"
 #include "ultima/ultima8/misc/p_dynamic_cast.h"
 
 namespace Ultima {
 namespace Ultima8 {
-
-struct Rect;
 
 class GumpShapeArchive : public ShapeArchive {
 public:
@@ -46,10 +45,10 @@ public:
 	~GumpShapeArchive() override;
 
 	void loadGumpage(Common::SeekableReadStream *rs);
-	Rect *getGumpItemArea(uint32 shapenum);
+	Common::Rect *getGumpItemArea(uint32 shapenum);
 
 protected:
-	Std::vector<Rect *> _gumpItemArea;
+	Std::vector<Common::Rect *> _gumpItemArea;
 };
 
 } // End of namespace Ultima8

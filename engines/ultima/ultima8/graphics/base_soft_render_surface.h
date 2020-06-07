@@ -23,8 +23,8 @@
 #ifndef ULTIMA8_GRAPHICS_BASESOFTRENDERSURFACE_H
 #define ULTIMA8_GRAPHICS_BASESOFTRENDERSURFACE_H
 
+#include "common/rect.h"
 #include "ultima/ultima8/graphics/render_surface.h"
-#include "ultima/ultima8/misc/rect.h"
 #include "graphics/managed_surface.h"
 
 namespace Ultima {
@@ -58,7 +58,7 @@ protected:
 	bool            _flipped;
 
 	// Clipping Rectangle
-	Rect _clipWindow;
+	Common::Rect _clipWindow;
 
 	// Locking count
 	uint32          _lockCount;              // Number of locks on surface
@@ -131,16 +131,16 @@ public:
 	void GetOrigin(int32 &x, int32 &y) const override;
 
 	// Get the Surface Dimensions
-	void GetSurfaceDims(Rect &) const override;
+	void GetSurfaceDims(Common::Rect &) const override;
 
 	// Get Clipping Rectangle
-	void GetClippingRect(Rect &) const override;
+	void GetClippingRect(Common::Rect &) const override;
 
 	// Set Clipping Rectangle
-	void SetClippingRect(const Rect &) override;
+	void SetClippingRect(const Common::Rect &) override;
 
 	// Check Clipped. -1 if off screen, 0 if not clipped, 1 if clipped
-	int16 CheckClipped(const Rect &) const override;
+	int16 CheckClipped(const Common::Rect &) const override;
 
 	// Flip the surface
 	void SetFlipped(bool flipped) override;

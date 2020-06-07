@@ -78,7 +78,7 @@ void MiniMapGump::PaintThis(RenderSurface *surf, int32 lerp_factor, bool scaled)
 	int mapChunkSize = currentmap->getChunkSize();
 
 	if (currentmap->getNum() != _lastMapNum) {
-		_minimap.fillRect(Common::Rect(0, 0, _minimap.w, _minimap.h), 0);
+		_minimap.fillRect(Common::Rect(_minimap.w, _minimap.h), 0);
 		_lastMapNum = currentmap->getNum();
 	}
 

@@ -394,23 +394,23 @@ void Ultima8Engine::shutdownGame(bool reloading) {
 	pout << "-- Game Shutdown -- " << Std::endl;
 
 	if (reloading) {
-		Rect dims;
+		Common::Rect dims;
 		_screen->GetSurfaceDims(dims);
 
 		debugN(MM_INFO, "Creating Desktop...\n");
-		_desktopGump = new DesktopGump(0, 0, dims.w, dims.h);
+		_desktopGump = new DesktopGump(0, 0, dims.width(), dims.height());
 		_desktopGump->InitGump(0);
 		_desktopGump->MakeFocus();
 
 		debugN(MM_INFO, "Creating _scalerGump...\n");
-		_scalerGump = new ScalerGump(0, 0, dims.w, dims.h);
+		_scalerGump = new ScalerGump(0, 0, dims.width(), dims.height());
 		_scalerGump->InitGump(0);
 
-		Rect scaled_dims;
+		Common::Rect scaled_dims;
 		_scalerGump->GetDims(scaled_dims);
 
 		debugN(MM_INFO, "Creating Inverter...\n");
-		_inverterGump = new InverterGump(0, 0, scaled_dims.w, scaled_dims.h);
+		_inverterGump = new InverterGump(0, 0, scaled_dims.width(), scaled_dims.height());
 		_inverterGump->InitGump(0);
 	}
 }
@@ -580,9 +580,9 @@ void Ultima8Engine::GraphicSysInit() {
 	_settingMan->get("bpp", bpp);
 
 	if (_screen) {
-		Rect old_dims;
+		Common::Rect old_dims;
 		_screen->GetSurfaceDims(old_dims);
-		if (width == old_dims.w && height == old_dims.h)
+		if (width == old_dims.width() && height == old_dims.height())
 			return;
 		bpp = RenderSurface::_format.bpp();
 
@@ -638,10 +638,10 @@ void Ultima8Engine::GraphicSysInit() {
 	_scalerGump = new ScalerGump(0, 0, width, height);
 	_scalerGump->InitGump(0);
 
-	Rect scaled_dims;
+	Common::Rect scaled_dims;
 	_scalerGump->GetDims(scaled_dims);
 
-	_inverterGump = new InverterGump(0, 0, scaled_dims.w, scaled_dims.h);
+	_inverterGump = new InverterGump(0, 0, scaled_dims.width(), scaled_dims.height());
 	_inverterGump->InitGump(0);
 
 	_screen = new_screen;
@@ -1037,27 +1037,27 @@ void Ultima8Engine::resetEngine() {
 void Ultima8Engine::setupCoreGumps() {
 	debugN(MM_INFO, "Setting up core _game gumps...\n");
 
-	Rect dims;
+	Common::Rect dims;
 	_screen->GetSurfaceDims(dims);
 
 	debugN(MM_INFO, "Creating Desktop...\n");
-	_desktopGump = new DesktopGump(0, 0, dims.w, dims.h);
+	_desktopGump = new DesktopGump(0, 0, dims.width(), dims.height());
 	_desktopGump->InitGump(0);
 	_desktopGump->MakeFocus();
 
 	debugN(MM_INFO, "Creating _scalerGump...\n");
-	_scalerGump = new ScalerGump(0, 0, dims.w, dims.h);
+	_scalerGump = new ScalerGump(0, 0, dims.width(), dims.height());
 	_scalerGump->InitGump(0);
 
-	Rect scaled_dims;
+	Common::Rect scaled_dims;
 	_scalerGump->GetDims(scaled_dims);
 
 	debugN(MM_INFO, "Creating Inverter...\n");
-	_inverterGump = new InverterGump(0, 0, scaled_dims.w, scaled_dims.h);
+	_inverterGump = new InverterGump(0, 0, scaled_dims.width(), scaled_dims.height());
 	_inverterGump->InitGump(0);
 
 	debugN(MM_INFO, "Creating GameMapGump...\n");
-	_gameMapGump = new GameMapGump(0, 0, scaled_dims.w, scaled_dims.h);
+	_gameMapGump = new GameMapGump(0, 0, scaled_dims.width(), scaled_dims.height());
 	_gameMapGump->InitGump(0);
 
 
@@ -1475,8 +1475,8 @@ void Ultima8Engine::showSplashScreen() {
 	Graphics::Screen *scr = Ultima8Engine::get_instance()->getScreen();
 	const Graphics::Surface *srcSurface = png.getSurface();
 
-	scr->transBlitFrom(*srcSurface, Common::Rect(0, 0, srcSurface->w, srcSurface->h),
-		Common::Rect(0, 0, scr->w, scr->h));
+	scr->transBlitFrom(*srcSurface, Common::Rect(srcSurface->w, srcSurface->h),
+		Common::Rect(scr->w, scr->h));
 	scr->update();
 	// Handle a single event to get the splash screen shown
 	Common::Event event;
