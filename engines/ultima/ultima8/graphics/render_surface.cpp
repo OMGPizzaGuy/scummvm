@@ -59,11 +59,11 @@ RenderSurface::~RenderSurface() {
 
 void RenderSurface::SetPixelsPointer()
 {
-	_pixels = static_cast<uint8 *>(_surface->getBasePtr(_ox, _oy));
+	_pixels = static_cast<uint8 *>(_surface->getBasePtr(0, 0));
 	_pitch = _surface->pitch;
 
 	if (_flipped) {
-		_pixels = static_cast<uint8 *>(_surface->getBasePtr(_ox, _surface->h - 1 - _oy));
+		_pixels = static_cast<uint8 *>(_surface->getBasePtr(0, _surface->h - 1));
 		_pitch = -_pitch;
 	}
 
@@ -121,9 +121,7 @@ bool RenderSurface::EndPainting() {
 // r: Rect object to fill
 //
 void RenderSurface::GetSurfaceDims(Rect &r) const {
-	r.moveTo(_ox, _oy);
-	r.setWidth(_surface->w);
-	r.setHeight(_surface->h);
+	r = Rect(0 - _ox, 0 - _oy, _surface->w - _ox, _surface->h - _oy);
 }
 
 //
@@ -132,9 +130,6 @@ void RenderSurface::GetSurfaceDims(Rect &r) const {
 // Desc: Set the Phyiscal Pixel to be the logical origin
 //
 void RenderSurface::SetOrigin(int32 x, int32 y) {
-	// Adjust the clipping window
-	_clipWindow.translate(_ox - x, _oy - y);
-
 	// Set the origin
 	_ox = x;
 	_oy = y;
@@ -161,7 +156,7 @@ void RenderSurface::GetOrigin(int32 &x, int32 &y) const {
 // r: Rect object to fill
 //
 void RenderSurface::GetClippingRect(Rect &r) const {
-	r = Rect(_clipWindow.left, _clipWindow.top, _clipWindow.right, _clipWindow.bottom);
+	r = Rect(_clipWindow.left - _ox, _clipWindow.top - _oy, _clipWindow.right - _ox, _clipWindow.bottom - _oy);
 }
 
 //
@@ -172,8 +167,8 @@ void RenderSurface::GetClippingRect(Rect &r) const {
 //
 void RenderSurface::SetClippingRect(const Rect &r) {
 	// What we need to do is to clip the clipping rect to the phyiscal screen
-	_clipWindow = Common::Rect(r.left, r.top, r.right, r.bottom);
-	_clipWindow.clip(Common::Rect(-_ox, -_oy, -_ox + _surface->w, -_oy + _surface->h));
+	_clipWindow = Common::Rect(r.left + _ox, r.top + _oy, r.right + _ox, r.bottom + _oy);
+	_clipWindow.clip(Common::Rect(0, 0, _surface->w, _surface->h));
 }
 
 //
@@ -198,8 +193,8 @@ bool RenderSurface::IsFlipped() const {
 
 void RenderSurface::fill32(uint32 rgb, const Rect &r) {
 	Common::Rect rect(r.left, r.top, r.right, r.bottom);
-	rect.clip(_clipWindow);
 	rect.translate(_ox, _oy);
+	rect.clip(_clipWindow);
 	rgb = _surface->format.RGBToColor(TEX32_R(rgb), TEX32_G(rgb), TEX32_B(rgb));
 	_surface->fillRect(rect, rgb);
 }
@@ -248,6 +243,7 @@ void RenderSurface::fillBlended(uint32 rgba, const Rect &r) {
 	}
 
 	Common::Rect rect(r.left, r.top, r.right, r.bottom);
+	rect.translate(_ox, _oy);
 	rect.clip(_clipWindow);
 
 	if (_surface->format.bytesPerPixel == 4)
@@ -258,8 +254,8 @@ void RenderSurface::fillBlended(uint32 rgba, const Rect &r) {
 
 void RenderSurface::frameRect32(uint32 rgb, const Rect &r) {
 	Common::Rect rect(r.left, r.top, r.right, r.bottom);
-	rect.clip(_clipWindow);
 	rect.translate(_ox, _oy);
+	rect.clip(_clipWindow);
 	rgb = _surface->format.RGBToColor(TEX32_R(rgb), TEX32_G(rgb), TEX32_B(rgb));
 	_surface->frameRect(rect, rgb);
 }
@@ -413,9 +409,9 @@ void inline fadedBlitLogic(uint8 *pixels, int32 pitch,
 //
 void RenderSurface::FadedBlit(const Graphics::ManagedSurface &src, const Common::Rect &srcRect, int32 dx, int32 dy, uint32 col32, bool alpha_blend) {
 	if (_surface->format.bytesPerPixel == 4)
-		fadedBlitLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, src, srcRect, dx, dy, col32, alpha_blend);
+		fadedBlitLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, src, srcRect, dx + _ox, dy + _oy, col32, alpha_blend);
 	else if (_surface->format.bytesPerPixel == 2)
-		fadedBlitLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, src, srcRect, dx, dy, col32, alpha_blend);
+		fadedBlitLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, src, srcRect, dx + _ox, dy + _oy, col32, alpha_blend);
 }
 
 namespace {
@@ -560,9 +556,9 @@ void inline maskedBlitLogic(uint8 *pixels, int32 pitch,
 //
 void RenderSurface::MaskedBlit(const Graphics::ManagedSurface &src, const Common::Rect &srcRect, int32 dx, int32 dy, uint32 col32, bool alpha_blend) {
 	if (_surface->format.bytesPerPixel == 4)
-		maskedBlitLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, src, srcRect, dx, dy, col32, alpha_blend);
+		maskedBlitLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, src, srcRect, dx + _ox, dy + _oy, col32, alpha_blend);
 	else if (_surface->format.bytesPerPixel == 2)
-		maskedBlitLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, src, srcRect, dx, dy, col32, alpha_blend);
+		maskedBlitLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, src, srcRect, dx + _ox, dy + _oy, col32, alpha_blend);
 }
 
 //
@@ -725,9 +721,9 @@ void RenderSurface::Paint(const Shape *s, uint32 framenum, int32 x, int32 y) {
 	const uint32 *map = s->getPalette()->_native;
 
 	if (_surface->format.bytesPerPixel == 4)
-		paintLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, map);
+		paintLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, map);
 	else if (_surface->format.bytesPerPixel == 2)
-		paintLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, map);
+		paintLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, map);
 }
 
 //
@@ -744,9 +740,9 @@ void RenderSurface::PaintTranslucent(const Shape *s, uint32 framenum, int32 x, i
 	const uint32 *xform_map = s->getPalette()->_xform;
 
 	if (_surface->format.bytesPerPixel == 4)
-		paintTranslucentLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, map, xform_map);
+		paintTranslucentLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, map, xform_map);
 	else if (_surface->format.bytesPerPixel == 2)
-		paintTranslucentLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, map, xform_map);
+		paintTranslucentLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, map, xform_map);
 }
 
 //
@@ -763,9 +759,9 @@ void RenderSurface::PaintMirrored(const Shape *s, uint32 framenum, int32 x, int3
 	const uint32 *xform_map = s->getPalette()->_xform;
 
 	if (_surface->format.bytesPerPixel == 4)
-		paintMirroredLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, trans, map, xform_map);
+		paintMirroredLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, trans, map, xform_map);
 	else if (_surface->format.bytesPerPixel == 2)
-		paintMirroredLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, trans, map, xform_map);
+		paintMirroredLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, trans, map, xform_map);
 }
 
 //
@@ -782,9 +778,9 @@ void RenderSurface::PaintInvisible(const Shape *s, uint32 framenum, int32 x, int
 	const uint32 *xform_map = s->getPalette()->_xform;
 
 	if (_surface->format.bytesPerPixel == 4)
-		paintInvisibleLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, trans, mirrored, map, xform_map);
+		paintInvisibleLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, trans, mirrored, map, xform_map);
 	else if (_surface->format.bytesPerPixel == 2)
-		paintInvisibleLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, trans, mirrored, map, xform_map);
+		paintInvisibleLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, trans, mirrored, map, xform_map);
 }
 
 //
@@ -801,9 +797,9 @@ void RenderSurface::PaintHighlight(const Shape *s, uint32 framenum, int32 x, int
 	const uint32 *xform_map = s->getPalette()->_xform;
 
 	if (_surface->format.bytesPerPixel == 4)
-		paintHighlightLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, trans, mirrored, col32, map, xform_map);
+		paintHighlightLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, trans, mirrored, col32, map, xform_map);
 	else if (_surface->format.bytesPerPixel == 2)
-		paintHighlightLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, trans, mirrored, col32, map, xform_map);
+		paintHighlightLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, trans, mirrored, col32, map, xform_map);
 }
 
 //
@@ -820,9 +816,9 @@ void RenderSurface::PaintHighlightInvis(const Shape *s, uint32 framenum, int32 x
 	const uint32 *xform_map = s->getPalette()->_xform;
 
 	if (_surface->format.bytesPerPixel == 4)
-		paintHighlightInvisLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, trans, mirrored, col32, map, xform_map);
+		paintHighlightInvisLogic<uint32>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, trans, mirrored, col32, map, xform_map);
 	else if (_surface->format.bytesPerPixel == 2)
-		paintHighlightInvisLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x, y, trans, mirrored, col32, map, xform_map);
+		paintHighlightInvisLogic<uint16>(_pixels, _pitch, _clipWindow, _surface->format, frame, x + _ox, y + _oy, trans, mirrored, col32, map, xform_map);
 }
 
 } // End of namespace Ultima8
