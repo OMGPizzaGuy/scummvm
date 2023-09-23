@@ -34,6 +34,12 @@ namespace Ultima8 {
 
 class Shape;
 
+enum DependencyOrder {
+	kBefore = -1,
+	kUndefined = 0,
+	kAfter = 1
+};
+
 /**
  * This class is basically private to ItemSorter, but is in a separate header
  * to enable unit testing.
@@ -239,8 +245,8 @@ struct SortItem {
 	// Screenspace check to see if this occludes si2. Assumes this is above of si2
 	inline bool occludes(const SortItem &si2) const;
 
-	// Screenspace check to see if this is below si2. Assumes this overlaps si2
-	inline bool below(const SortItem &si2) const;
+	// Check to determine render dependency order of items
+	inline DependencyOrder compare(const SortItem &si2) const;
 
 	// Comparison for the sorted lists
 	inline bool listLessThan(const SortItem &si2) const {
@@ -407,93 +413,94 @@ inline bool SortItem::occludes(const SortItem &si2) const {
 		top_right_res && top_left_res;
 }
 
-inline bool SortItem::below(const SortItem &si2) const {
+inline DependencyOrder SortItem::compare(const SortItem &si2) const {
 	const SortItem &si1 = *this;
 
+	if (si1._occluded || si2._occluded || !si1.overlap(si2))
+		return DependencyOrder::kUndefined;
+
 	if (si1._sprite != si2._sprite)
-		return si1._sprite < si2._sprite;
+		return si2._sprite ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Clearly in z and lower is non-flat?
 	if (si1._z < si2._z && si1._zTop <= si2._z)
-		return true;
+		return DependencyOrder::kBefore;
 
 	if (si1._z > si2._z && si1._z >= si2._zTop)
-		return false;
+		return DependencyOrder::kAfter;
 
 	// Clearly in y?
 	if (si1._y <= si2._yFar)
-		return true;
+		return DependencyOrder::kBefore;
 	if (si1._yFar >= si2._y)
-		return false;
+		return DependencyOrder::kAfter;
 
 	// Clearly in x?
 	if (si1._x <= si2._xLeft)
-		return true;
+		return DependencyOrder::kBefore;
 	if (si1._xLeft >= si2._x)
-		return false;
+		return DependencyOrder::kAfter;
 
 	// Overlapping z-bottom check
 	// If an object's base (z-bottom) is higher another's, it should be rendered after.
 	// This check must be on the z-bottom and not the z-top because two objects with the
 	// same z-position may have different heights (think of a mouse sorting vs the Avatar).
 	if (si1._z != si2._z && si1._solid == si2._solid)
-		return si1._z < si2._z;
-
-	// Are overlapping in all 3 dimensions if we come here
+		return si1._z < si2._z ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Inv items always drawn after
 	if (si1._invitem != si2._invitem)
-		return si1._invitem < si2._invitem;
+		return si2._invitem ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Flat always gets drawn before
 	if (si1._flat != si2._flat)
-		return si1._flat > si2._flat;
+		return si1._flat ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Specialist handling for same location
 	if (si1._x == si2._x && si1._y == si2._y) {
 		// Trans always gets drawn after
 		if (si1._trans != si2._trans)
-			return si1._trans < si2._trans;
+			return si2._trans ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 	}
 
 	// Specialist z flat handling
 	if (si1._flat && si2._flat) {
 		// Trans always gets drawn after
 		if (si1._trans != si2._trans)
-			return si1._trans < si2._trans;
+			return si2._trans ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 		// Animated always gets drawn after
 		if (si1._anim != si2._anim)
-			return si1._anim < si2._anim;
+			return si2._anim ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 		// Draw always gets drawn first
 		if (si1._draw != si2._draw)
-			return si1._draw > si2._draw;
+			return si1._draw ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 		// Solid always gets drawn first
 		if (si1._solid != si2._solid)
-			return si1._solid > si2._solid;
+			return si1._solid ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 		// Occludes always get drawn first
 		if (si1._occl != si2._occl)
-			return si1._occl > si2._occl;
+			return si1._occl ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 		// Large flats squares get drawn first
 		if (si1._fbigsq != si2._fbigsq)
-			return si1._fbigsq > si2._fbigsq;
+			return si1._fbigsq ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 	}
 
 	// Disabled: Land always gets drawn first
 	//if (si1._land != si2._land)
-	//	return si1._land > si2._land;
+	//	return si1._land ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Land always gets drawn before roof
 	if (si1._land && si2._land && si1._roof != si2._roof)
-		return si1._roof < si2._roof;
+		return si2._roof ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Roof always gets drawn first
 	if (si1._roof != si2._roof)
-		return si1._roof > si2._roof;
+		return si1._roof ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// X-Flat gets drawn after when past center point
 	bool xFlat1 = si1._xLeft == si1._x;
@@ -501,7 +508,10 @@ inline bool SortItem::below(const SortItem &si2) const {
 	if (xFlat1 != xFlat2) {
 		int32 xCenter1 = (si1._xLeft + si1._x) / 2;
 		int32 xCenter2 = (si2._xLeft + si2._x) / 2;
-		return xFlat1 ? xCenter1 <= xCenter2 : xCenter1 < xCenter2;
+		if (xFlat1 ? xCenter1 <= xCenter2 : xCenter1 < xCenter2)
+			return DependencyOrder::kBefore;
+		else
+			return DependencyOrder::kAfter;
 	}
 
 	// Disabled: Y-Flat gets drawn after when past center point
@@ -511,31 +521,34 @@ inline bool SortItem::below(const SortItem &si2) const {
 	//if (yFlat1 != yFlat2) {
 	//	int32 yCenter1 = (si1._yFar + si1._y) / 2;
 	//	int32 yCenter2 = (si2._yFar + si2._y) / 2;
-	//	return yFlat1 ? yCenter1 <= yCenter2 : yCenter1 < yCenter2;
+	//	if (yFlat1 ? yCenter1 <= yCenter2 : yCenter1 < yCenter2)
+	//		return DependencyOrder::kBefore;
+	//	else
+	//		return DependencyOrder::kAfter;
 	//}
 
 	// Partial in X + Y front
 	if (si1._x + si1._y != si2._x + si2._y)
-		return (si1._x + si1._y < si2._x + si2._y);
+		return (si1._x + si1._y < si2._x + si2._y) ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Partial in X + Y back
 	if (si1._xLeft + si1._yFar != si2._xLeft + si2._yFar)
-		return (si1._xLeft + si1._yFar < si2._xLeft + si2._yFar);
+		return (si1._xLeft + si1._yFar < si2._xLeft + si2._yFar) ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Partial in y?
 	if (si1._y != si2._y)
-		return si1._y < si2._y;
+		return si1._y < si2._y ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Partial in x?
 	if (si1._x != si2._x)
-		return si1._x < si2._x;
+		return si1._x < si2._x ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// Just sort by shape number
 	if (si1._shapeNum != si2._shapeNum)
-		return si1._shapeNum < si2._shapeNum;
+		return si1._shapeNum < si2._shapeNum ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 
 	// And then by _frame
-	return si1._frame < si2._frame;
+	return si1._frame < si2._frame ? DependencyOrder::kBefore : DependencyOrder::kAfter;
 }
 
 Common::String SortItem::dumpInfo() const {

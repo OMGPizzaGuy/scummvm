@@ -1,6 +1,8 @@
 #include <cxxtest/TestSuite.h>
 #include "engines/ultima/ultima8/world/sort_item.h"
 
+using Ultima::Ultima8::DependencyOrder;
+
 /**
  * Test suite for the functions in engines/ultima/ultima8/world/sort_item.h
  *
@@ -25,8 +27,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		TS_ASSERT(si1.overlap(si2));
 		TS_ASSERT(si2.overlap(si1));
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/* Non-overlapping with lower X position should always be below */
@@ -42,8 +44,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		TS_ASSERT(si1.overlap(si2));
 		TS_ASSERT(si2.overlap(si1));
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/* Non-overlapping with lower Z position should always be below */
@@ -59,8 +61,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		TS_ASSERT(si1.overlap(si2));
 		TS_ASSERT(si2.overlap(si1));
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/* Sprites should always be at the top regardless of x/y/z */
@@ -76,12 +78,12 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		TS_ASSERT(si1.overlap(si2));
 		TS_ASSERT(si2.overlap(si1));
 
-		TS_ASSERT(!si1.below(si2));
-		TS_ASSERT(si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kAfter);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kBefore);
 
 		si2._sprite = true;
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -105,8 +107,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		TS_ASSERT(si1.overlap(si2));
 		TS_ASSERT(si2.overlap(si1));
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/* Overlapping flat items (generally the floor) follow a set of rules */
@@ -124,44 +126,44 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 
 		// If one has a higher z, it's above
 		si2._z = 1;
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 		si2._z = 0;
 
 		// Animated always gets drawn above
 		si1._anim = true;
-		TS_ASSERT(si2.below(si1));
-		TS_ASSERT(!si1.below(si2));
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kBefore);
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kAfter);
 		si1._anim = false;
 
 		// Trans always gets drawn above
 		si1._trans = true;
-		TS_ASSERT(si2.below(si1));
-		TS_ASSERT(!si1.below(si2));
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kBefore);
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kAfter);
 		si1._trans = false;
 
 		// Draw always gets drawn below
 		si1._draw = true;
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 		si1._draw = false;
 
 		// Solid always gets drawn below
 		si1._solid = true;
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 		si1._solid = false;
 
 		// Occludes always get drawn below
 		si1._occl = true;
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 		si1._occl = false;
 
 		// Large flat squares get drawn below
 		si1._fbigsq = true;
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 		si1._fbigsq = false;
 	}
 
@@ -182,8 +184,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		si2.setBoxBounds(b2, 0, 0);
 		si2._solid = true;
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -205,8 +207,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		si2._land = true;
 
 		// This roof is below main actor
-		TS_ASSERT(!si1.below(si2));
-		TS_ASSERT(si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kAfter);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kBefore);
 
 		Ultima::Ultima8::Box b3(15551, 13631, 104, 128, 32, 8);
 		si2.setBoxBounds(b2, 0, 0);
@@ -215,12 +217,12 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		si2._land = true;
 
 		// Original Game: This roof is above main actor
-		//TS_ASSERT(si1.below(si2));
-		//TS_ASSERT(!si2.below(si1));
+		//TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		//TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 
 		// Our Behavior: This roof is below main actor
-		TS_ASSERT(!si1.below(si2));
-		TS_ASSERT(si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kAfter);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kBefore);
 	}
 
 	/**
@@ -242,8 +244,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		si2._solid = true;
 		si2._land = true;
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -264,8 +266,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		si2.setBoxBounds(b2, 0, 0);
 		si2._trans = true;
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -286,8 +288,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		Ultima::Ultima8::Box b2(13244, 9876, 48, 0, 96, 40);
 		si2.setBoxBounds(b2, 0, 0);
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -307,8 +309,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		Ultima::Ultima8::Box b2(19167, 15775, 56, 0, 128, 40);
 		si2.setBoxBounds(b2, 0, 0);
 
-		TS_ASSERT(!si1.below(si2));
-		TS_ASSERT(si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kAfter);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kBefore);
 	}
 
 	/**
@@ -327,8 +329,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		si2.setBoxBounds(b2, 0, 0);
 		si2._solid = true;
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -351,8 +353,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		TS_ASSERT(si1.overlap(si2));
 		TS_ASSERT(si2.overlap(si1));
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -375,8 +377,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		TS_ASSERT(si1.overlap(si2));
 		TS_ASSERT(si2.overlap(si1));
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -398,8 +400,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		si2._occl = true;
 		si2._land = true;
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/**
@@ -418,8 +420,8 @@ class U8SortItemTestSuite : public CxxTest::TestSuite {
 		si2._anim = true;
 		si2._trans = true;
 
-		TS_ASSERT(si1.below(si2));
-		TS_ASSERT(!si2.below(si1));
+		TS_ASSERT(si1.compare(si2) == DependencyOrder::kBefore);
+		TS_ASSERT(si2.compare(si1) == DependencyOrder::kAfter);
 	}
 
 	/* Overlapping non-flat occludes flat */

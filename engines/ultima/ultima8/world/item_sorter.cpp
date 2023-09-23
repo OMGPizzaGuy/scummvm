@@ -220,12 +220,9 @@ void ItemSorter::AddItem(int32 x, int32 y, int32 z, uint32 shapeNum, uint32 fram
 		}
 #endif // SORTITEM_OCCLUSION_EXPERIMENTAL
 
-		// Doesn't overlap
-		if (si2->_occluded || !si->overlap(*si2))
-			continue;
-
-		// Attempt to find which is infront
-		if (si->below(*si2)) {
+		// Attempt to find paint dependency order
+		DependencyOrder result = si->compare(*si2);
+		if (result == DependencyOrder::kBefore) {
 			if (si2->_occl && si2->occludes(*si)) {
 				// No need to do any more checks, this isn't visible
 				si->_occluded = true;
@@ -234,7 +231,7 @@ void ItemSorter::AddItem(int32 x, int32 y, int32 z, uint32 shapeNum, uint32 fram
 				// si1 is behind si2, so add it to si2's dependency list
 				si2->_depends.insert_sorted(si);
 			}
-		} else {
+		} else if (result == DependencyOrder::kAfter) {
 			if (si->_occl && si->occludes(*si2)) {
 				// Occluded, but we can't remove it from the list
 				si2->_occluded = true;
@@ -351,8 +348,7 @@ void ItemSorter::PaintDisplayList(RenderSurface *surf, bool item_highlight) {
 			oc.setBoxBounds(box, _camSx, _camSy);
 
 			for (si2 = _items; si2 != nullptr; si2 = si2->_next) {
-				if (si2->_groupNum != group && !si2->_occluded &&
-					si2->overlap(oc) && si2->below(oc) && oc.occludes(*si2)) {
+				if (si2->_groupNum != group && si2->compare(oc) == DependencyOrder::kBefore && oc.occludes(*si2)) {
 					si2->_occluded = true;
 				}
 			}
