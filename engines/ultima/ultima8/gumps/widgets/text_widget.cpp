@@ -64,7 +64,7 @@ void TextWidget::InitGump(Gump *newparent, bool take_focus) {
 
 		// Note that GumpRectToScreenSpace is guaranteed to keep
 		// _targetWidth/_targetHeight zero if they already were.
-		Rect target(_dims);
+		Rect target(_dims.left, _dims.top, _dims.right, _dims.bottom);
 		GumpRectToScreenSpace(target, ROUND_OUTSIDE);
 
 		_targetWidth = target.width();
@@ -193,7 +193,7 @@ void TextWidget::PaintComposited(RenderSurface *surf, int32 lerp_factor, int32 s
 	if (dynamic_cast<ButtonWidget *>(_parent) && dynamic_cast<AskGump *>(_parent->GetParent()))
 		return;
 
-	Rect rect(_dims);
+	Rect rect(_dims.left, _dims.top, _dims.right, _dims.bottom);
 	GumpRectToScreenSpace(rect, ROUND_OUTSIDE);
 }
 

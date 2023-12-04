@@ -181,7 +181,7 @@ void EditWidget::PaintComposited(RenderSurface *surf, int32 lerp_factor, int32 s
 
 	_cachedText->draw(surf, x, y, true);
 
-	Rect rect(_dims);
+	Rect rect(_dims.left, _dims.top, _dims.right, _dims.bottom);
 	GumpRectToScreenSpace(rect, ROUND_OUTSIDE);
 }
 

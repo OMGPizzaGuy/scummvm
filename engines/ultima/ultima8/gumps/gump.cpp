@@ -232,11 +232,11 @@ void Gump::Paint(RenderSurface *surf, int32 lerp_factor, bool scaled) {
 	surf->SetOrigin(ox + nx, oy + ny);
 
 	// Get Old Clipping Rect
-	Rect old_rect;
+	Common::Rect old_rect;
 	surf->GetClippingRect(old_rect);
 
 	// Set new clipping rect
-	Rect new_rect = _dims;
+	Common::Rect new_rect(_dims.left, _dims.top, _dims.right, _dims.bottom);
 	new_rect.clip(old_rect);
 	surf->SetClippingRect(new_rect);
 
@@ -288,14 +288,15 @@ void Gump::PaintCompositing(RenderSurface *surf, int32 lerp_factor,
 	surf->SetOrigin(0, 0);
 
 	// Get Old Clipping Rect
-	Rect old_rect;
+	Common::Rect old_rect;
 	surf->GetClippingRect(old_rect);
 
 	// Set new clipping rect
 	Rect new_rect(_dims);
 	GumpRectToScreenSpace(new_rect, ROUND_OUTSIDE);
-	new_rect.clip(old_rect);
-	surf->SetClippingRect(new_rect);
+	Common::Rect rect(new_rect.left, new_rect.top, new_rect.right, new_rect.bottom);
+	rect.clip(old_rect);
+	surf->SetClippingRect(rect);
 
 	// Iterate all children
 	Std::list<Gump *>::reverse_iterator it = _children.rbegin();

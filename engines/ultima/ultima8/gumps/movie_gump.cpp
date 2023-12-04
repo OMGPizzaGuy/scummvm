@@ -200,7 +200,7 @@ void MovieGump::PaintThis(RenderSurface *surf, int32 lerp_factor, bool scaled) {
 		if (subtitle) {
 			int32 x, y;
 			Rect textdims;
-			Rect screendims;
+			Common::Rect screendims;
 			subtitle->getLocation(x, y);
 			subtitle->GetDims(textdims);
 			surf->GetSurfaceDims(screendims);

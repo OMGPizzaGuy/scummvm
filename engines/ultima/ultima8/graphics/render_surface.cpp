@@ -114,12 +114,12 @@ bool RenderSurface::EndPainting() {
 }
 
 //
-// void RenderSurface::GetSurfaceDims(Rect &r)
+// void RenderSurface::GetSurfaceDims(Common::Rect &r)
 //
 // Desc: Get the Surface Dimentions (and logical origin)
 // r: Rect object to fill
 //
-void RenderSurface::GetSurfaceDims(Rect &r) const {
+void RenderSurface::GetSurfaceDims(Common::Rect &r) const {
 	r.moveTo(_ox, _oy);
 	r.setWidth(_surface->w);
 	r.setHeight(_surface->h);
@@ -154,13 +154,13 @@ void RenderSurface::GetOrigin(int32 &x, int32 &y) const {
 }
 
 //
-// void RenderSurface::GetClippingRect(Rect &r)
+// void RenderSurface::GetClippingRect(Common::Rect &r)
 //
 // Desc: Get the Clipping Rectangle
 // r: Rect object to fill
 //
-void RenderSurface::GetClippingRect(Rect &r) const {
-	r = Rect(_clipWindow.left, _clipWindow.top, _clipWindow.right, _clipWindow.bottom);
+void RenderSurface::GetClippingRect(Common::Rect &r) const {
+	r = _clipWindow;
 }
 
 //
@@ -169,10 +169,10 @@ void RenderSurface::GetClippingRect(Rect &r) const {
 // Desc: Set the Clipping Rectangle
 // r: Rect object that contains new Clipping Rectangle
 //
-void RenderSurface::SetClippingRect(const Rect &r) {
+void RenderSurface::SetClippingRect(const Common::Rect &r) {
 	// What we need to do is to clip the clipping rect to the phyiscal screen
-	_clipWindow = Common::Rect(r.left, r.top, r.right, r.bottom);
-	_clipWindow.clip(Common::Rect(-_ox, -_oy, -_ox + _surface->w, -_oy + _surface->h));
+	_clipWindow = Common::Rect(-_ox, -_oy, -_ox + _surface->w, -_oy + _surface->h);
+	_clipWindow.clip(r);
 }
 
 //
@@ -195,8 +195,8 @@ bool RenderSurface::IsFlipped() const {
 	return _flipped;
 }
 
-void RenderSurface::fill32(uint32 rgb, const Rect &r) {
-	Common::Rect rect(r.left, r.top, r.right, r.bottom);
+void RenderSurface::fill32(uint32 rgb, const Common::Rect &r) {
+	Common::Rect rect(r);
 	rect.clip(_clipWindow);
 	rect.translate(_ox, _oy);
 	rgb = _surface->format.RGBToColor(TEX32_R(rgb), TEX32_G(rgb), TEX32_B(rgb));
@@ -244,7 +244,7 @@ void inline fillBlendedLogic(uint8 *pixels, int32 pitch, uint32 rgba, const Comm
 
 } // End of anonymous namespace
 
-void RenderSurface::fillBlended(uint32 rgba, const Rect &r) {
+void RenderSurface::fillBlended(uint32 rgba, const Common::Rect &r) {
 	int alpha = TEX32_A(rgba);
 	if (alpha == 0xFF) {
 		fill32(rgba, r);
@@ -253,7 +253,7 @@ void RenderSurface::fillBlended(uint32 rgba, const Rect &r) {
 		return;
 	}
 
-	Common::Rect rect(r.left, r.top, r.right, r.bottom);
+	Common::Rect rect(r);
 	rect.clip(_clipWindow);
 
 	if (_surface->format.bytesPerPixel == 4)
@@ -262,8 +262,8 @@ void RenderSurface::fillBlended(uint32 rgba, const Rect &r) {
 		fillBlendedLogic<uint16>(_pixels, _pitch, rgba, rect, _surface->format);
 }
 
-void RenderSurface::frameRect32(uint32 rgb, const Rect &r) {
-	Common::Rect rect(r.left, r.top, r.right, r.bottom);
+void RenderSurface::frameRect32(uint32 rgb, const Common::Rect &r) {
+	Common::Rect rect(r);
 	rect.clip(_clipWindow);
 	rect.translate(_ox, _oy);
 	rgb = _surface->format.RGBToColor(TEX32_R(rgb), TEX32_G(rgb), TEX32_B(rgb));

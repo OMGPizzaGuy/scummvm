@@ -680,7 +680,7 @@ void Ultima8Engine::paint() {
 	tpaint -= g_system->getMillis();
 #endif
 
-	Rect r;
+	Common::Rect r;
 	_screen->GetSurfaceDims(r);
 	if (_highRes)
 		_screen->fill32(TEX32_PACK_RGB(0, 0, 0), r);
@@ -724,7 +724,7 @@ void Ultima8Engine::GraphicSysInit() {
 	int height = ConfMan.getInt("height");
 
 	if (_screen) {
-		Rect old_dims;
+		Common::Rect old_dims;
 		_screen->GetSurfaceDims(old_dims);
 		if (width == old_dims.width() && height == old_dims.height())
 			return;
@@ -1078,7 +1078,7 @@ void Ultima8Engine::resetEngine() {
 void Ultima8Engine::setupCoreGumps() {
 	debugN(MM_INFO, "Setting up core game gumps...\n");
 
-	Rect dims;
+	Common::Rect dims;
 	_screen->GetSurfaceDims(dims);
 
 	debugN(MM_INFO, "Creating Desktop...\n");

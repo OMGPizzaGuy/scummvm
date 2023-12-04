@@ -106,7 +106,8 @@ void ShapeViewerGump::PaintThis(RenderSurface *surf, int32 lerp_factor, bool /*s
 	}
 
 	uint32 color = background_colors[_background];
-	surf->fill32(color, _dims);
+	Common::Rect rect(_dims.left, _dims.top, _dims.right, _dims.bottom);
+	surf->fill32(color, rect);
 
 	int32 posx = (_dims.width() - _shapeW) / 2 + _shapeX;
 	int32 posy = (_dims.height() - _shapeH) / 2 + _shapeY - 25;

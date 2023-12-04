@@ -105,7 +105,7 @@ void GameMapGump::PaintThis(RenderSurface *surf, int32 lerp_factor, bool scaled)
 		zlimit = roof->getZ();
 	}
 
-	Rect clipWindow;
+	Common::Rect clipWindow;
 	surf->GetClippingRect(clipWindow);
 	_displayList->BeginDisplayList(clipWindow, lx, ly, lz);
 

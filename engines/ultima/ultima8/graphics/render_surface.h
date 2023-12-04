@@ -23,7 +23,6 @@
 #define ULTIMA8_GRAPHICS_RENDERSURFACE_H
 
 #include "graphics/managed_surface.h"
-#include "ultima/ultima8/misc/rect.h"
 
 namespace Ultima {
 namespace Ultima8 {
@@ -31,7 +30,6 @@ namespace Ultima8 {
 class Shape;
 
 struct Palette;
-struct Rect;
 
 //
 // RenderSurface
@@ -100,13 +98,13 @@ public:
 	void GetOrigin(int32 &x, int32 &y) const;
 
 	//! Get the Surface Dimensions
-	void GetSurfaceDims(Rect &) const;
+	void GetSurfaceDims(Common::Rect &) const;
 
 	//! Get Clipping Rectangle
-	void GetClippingRect(Rect &) const;
+	void GetClippingRect(Common::Rect &) const;
 
 	//! Set Clipping Rectangle
-	void SetClippingRect(const Rect &);
+	void SetClippingRect(const Common::Rect &);
 
 	//! Flip the surface
 	void SetFlipped(bool flipped);
@@ -125,19 +123,19 @@ public:
 
 	//! Fill the region with a color in the TEX32_PACK_RGB format
 	void fill32(uint32 rgb, int32 sx, int32 sy, int32 w, int32 h) {
-		fill32(rgb, Rect(sx, sy, sx + w, sy + h));
+		fill32(rgb, Common::Rect(sx, sy, sx + w, sy + h));
 	}
 
 	//! Fill the region with a color in the TEX32_PACK_RGB format
-	void fill32(uint32 rgb, const Rect &r);
+	void fill32(uint32 rgb, const Common::Rect &r);
 
 	//! Fill the region doing alpha blending with a color in the TEX32_PACK_RGBA format
-	void fillBlended(uint32 rgba, const Rect &r);
+	void fillBlended(uint32 rgba, const Common::Rect &r);
 
 	//! Fill the region with a color in the TEX32_PACK_RGB format
-	void frameRect32(uint32 rgb, const Rect &r);
+	void frameRect32(uint32 rgb, const Common::Rect &r);
 
-		//
+	//
 	// The rule for painting methods:
 	//
 	// First arg are the source object to 'draw' with

@@ -22,6 +22,7 @@
 #ifndef ULTIMA8_WORLD_ITEMSORTER_H
 #define ULTIMA8_WORLD_ITEMSORTER_H
 
+#include "common/rect.h"
 #include "ultima/ultima8/misc/rect.h"
 
 namespace Ultima {
@@ -54,7 +55,7 @@ public:
 	};
 
 	// Begin creating the display list
-	void BeginDisplayList(const Rect &clipWindow, int32 camx, int32 camy, int32 camz);
+	void BeginDisplayList(const Common::Rect &clipWindow, int32 camx, int32 camy, int32 camz);
 
 	void AddItem(int32 x, int32 y, int32 z, uint32 shape_num, uint32 frame_num, uint32 item_flags, uint32 ext_flags, uint16 item_num = 0);
 	void AddItem(const Item *);                   // Add an Item. SetupLerp() MUST have been called

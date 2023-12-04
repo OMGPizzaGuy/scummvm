@@ -60,8 +60,10 @@ void DesktopGump::PaintChildren(RenderSurface *surf, int32 lerp_factor, bool sca
 			// If background blanking on modal is enabled...
 			// Background is partially transparent
 			if (_fadedModal && dynamic_cast<ModalGump *>(g) &&
-			        !dynamic_cast<TargetGump *>(g) && !g->IsHidden())
-				surf->fillBlended(TEX32_PACK_RGBA(0, 0, 0, 0x80), _dims);
+				!dynamic_cast<TargetGump *>(g) && !g->IsHidden()) {
+				Common::Rect rect(_dims.left, _dims.top, _dims.right, _dims.bottom);
+				surf->fillBlended(TEX32_PACK_RGBA(0, 0, 0, 0x80), rect);
+			}
 
 			g->Paint(surf, lerp_factor, scaled);
 		}
@@ -72,7 +74,7 @@ void DesktopGump::PaintChildren(RenderSurface *surf, int32 lerp_factor, bool sca
 
 void DesktopGump::RenderSurfaceChanged(RenderSurface *surf) {
 	// Resize the desktop gump to match the RenderSurface
-	Rect new_dims;
+	Common::Rect new_dims;
 	surf->GetSurfaceDims(new_dims);
 	_dims.setWidth(new_dims.width());
 	_dims.setHeight(new_dims.height());

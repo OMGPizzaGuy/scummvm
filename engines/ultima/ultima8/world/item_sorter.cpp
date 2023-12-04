@@ -72,12 +72,12 @@ ItemSorter::~ItemSorter() {
 	}
 }
 
-void ItemSorter::BeginDisplayList(const Rect &clipWindow, int32 camx, int32 camy, int32 camz) {
+void ItemSorter::BeginDisplayList(const Common::Rect &clipWindow, int32 camx, int32 camy, int32 camz) {
 	// Get the _shapes, if required
 	if (!_shapes) _shapes = GameData::get_instance()->getMainShapes();
 
 	// Set the clip window, and reset the item list
-	_clipWindow = clipWindow;
+	_clipWindow = Rect(clipWindow.left, clipWindow.top, clipWindow.right, clipWindow.bottom);
 
 	if (_itemsTail) {
 		_itemsTail->_next = _itemsUnused;
@@ -280,7 +280,8 @@ void ItemSorter::PaintDisplayList(RenderSurface *surf, bool item_highlight, bool
 	if (_sortLimit) {
 		// Clear the surface when debugging the sorter
 		uint32 color = TEX32_PACK_RGB(0, 0, 0);
-		surf->fill32(color, _clipWindow);
+		Common::Rect rect(_clipWindow.left, _clipWindow.top, _clipWindow.right, _clipWindow.bottom);
+		surf->fill32(color, rect);
 	}
 
 #ifdef SORTITEM_OCCLUSION_EXPERIMENTAL
