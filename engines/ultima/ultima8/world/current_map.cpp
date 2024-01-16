@@ -731,11 +731,17 @@ PositionInfo CurrentMap::getPositionInfo(const Box &target, const Box &start, ui
 	static const uint32 blockmask = (ShapeInfo::SI_SOLID | ShapeInfo::SI_DAMAGING);
 
 	int32 supportz = INT_MIN_VALUE;
-	int32 landz = INT_MIN_VALUE;
 	int32 roofz = INT_MAX_VALUE;
 
-	int32 midx = target._x - target._xd / 2;
-	int32 midy = target._y - target._yd / 2;
+	Point3 near(target._x - (target._xd * 1 / 8), target._y - (target._yd * 1 / 8), target._z);
+	Point3 mid(target._x - (target._xd / 2), target._y - (target._yd / 2), target._z);
+	Point3 far(target._x - (target._xd * 7 / 8), target._y - (target._yd * 7 / 8), target._z);
+
+	Point3 points[3][3] = {
+		{Point3(near.x, near.y, INT_MIN_VALUE), Point3(mid.x, near.y, INT_MIN_VALUE), Point3(far.x, near.y, INT_MIN_VALUE)},
+		{Point3(near.x, mid.y, INT_MIN_VALUE), Point3(mid.x, mid.y, INT_MIN_VALUE), Point3(far.x, mid.y, INT_MIN_VALUE)},
+		{Point3(near.x, far.y, INT_MIN_VALUE), Point3(mid.x, far.y, INT_MIN_VALUE), Point3(far.x, far.y, INT_MIN_VALUE)},
+	};
 
 	int minx = ((target._x - target._xd) / _mapChunkSize) - 1;
 	int maxx = (target._x / _mapChunkSize) + 1;
@@ -785,12 +791,16 @@ PositionInfo CurrentMap::getPositionInfo(const Box &target, const Box &start, ui
 					}
 				}
 
-				// check bottom center
-				if (ib.isBelow(midx, midy, target._z)) {
-					// check land
-					if (si->_flags & landmask && ib._z + ib._zd > landz) {
-						info.land = item;
-						landz = ib._z + ib._zd;
+				// check support points
+				for (int i = 0; i < 3; i++) {
+					for (int j = 0; j < 3; j++) {
+						if (ib.isBelow(points[i][j].x, points[i][j].y, target._z)) {
+							// check land
+							if (si->_flags & landmask && ib._z + ib._zd > points[i][j].z) {
+								info.land = item;
+								points[i][j].z = ib._z + ib._zd;
+							}
+						}
 					}
 				}
 			}
@@ -798,11 +808,18 @@ PositionInfo CurrentMap::getPositionInfo(const Box &target, const Box &start, ui
 	}
 
 	info.valid = info.blocker == nullptr;
-	// Partial support allowed if land is close. Allow up to 9 to match
-	// the position adjustments in scanForValidPosition for stepping on
-	// to Crusader elevators.
-	if (supportz == target._z && landz + 9 >= target._z)
-		info.supported = true;
+	// Partial support allowed if land is close to two opposing support points.
+	// Allow up to 9 to match the position adjustments in scanForValidPosition
+	// for stepping on to Crusader elevators.
+	if (supportz == target._z) {
+		if ((points[0][0].z + 9 >= target._z && points[2][2].z + 9 >= target._z) ||
+			(points[0][1].z + 9 >= target._z && points[2][1].z + 9 >= target._z) ||
+			(points[0][2].z + 9 >= target._z && points[2][0].z + 9 >= target._z) ||
+			(points[1][0].z + 9 >= target._z && points[1][2].z + 9 >= target._z) ||
+			(points[1][1].z + 9 >= target._z)) {
+			info.supported = true;
+		}
+	}
 
 	// Mark supported at minimum z
 	if (target._z <= 0)
