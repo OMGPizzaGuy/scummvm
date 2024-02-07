@@ -26,7 +26,6 @@
 #include "common/scummsys.h"
 #include "common/config-manager.h"
 #include "common/debug-channels.h"
-#include "graphics/palette.h"
 #include "graphics/scaler.h"
 #include "graphics/thumbnail.h"
 

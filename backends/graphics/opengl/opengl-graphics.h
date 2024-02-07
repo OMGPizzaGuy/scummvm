@@ -29,6 +29,7 @@
 #include "common/mutex.h"
 #include "common/ustr.h"
 
+#include "graphics/palette.h"
 #include "graphics/surface.h"
 
 namespace Graphics {
