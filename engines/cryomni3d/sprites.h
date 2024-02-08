@@ -73,7 +73,6 @@ private:
 		const byte *getSurface() const override { return _data; }
 
 		const byte *getPalette() const override { return nullptr; }
-		byte getPaletteStartIndex() const override { return 0; }
 		uint16 getPaletteCount() const override { return 0; }
 
 		uint setup(uint16 width, uint16 height);

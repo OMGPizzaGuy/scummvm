@@ -545,7 +545,7 @@ void GfxCursor::kernelSetMacCursor(GuiResourceId viewNum, int loopNum, int celNu
 
 		// CursorMan.replaceCursor() does this when called with just a Graphics::Cursor
 		if (macCursor->getPalette()) {
-			CursorMan.replaceCursorPalette(macCursor->getPalette(), macCursor->getPaletteStartIndex(), macCursor->getPaletteCount());
+			CursorMan.replaceCursorPalette(macCursor->getPalette(), 0, macCursor->getPaletteCount());
 		}
 	} else {
 		CursorMan.replaceCursor(macCursor);

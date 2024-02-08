@@ -4116,7 +4116,6 @@ public:
 	const byte *getSurface() const override { return _cursorGraphic; }
 
 	const byte *getPalette() const override { return _cursorPalette; }
-	byte getPaletteStartIndex() const override { return 0; }
 	uint16 getPaletteCount() const override { return 3; }
 
 private:

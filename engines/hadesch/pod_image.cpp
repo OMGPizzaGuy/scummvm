@@ -255,9 +255,6 @@ const byte *PodImage::getPalette() const {
 	return _paletteCursor.get();
 }
 
-byte PodImage::getPaletteStartIndex() const {
-	return 0;
-}
 
 uint16 PodImage::getPaletteCount() const {
 	return 256;

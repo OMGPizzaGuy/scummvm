@@ -546,8 +546,6 @@ void ScummEngine_v80he::setDefaultCursor() {
 			byte pixel = *surface++;
 
 			if (pixel != cursor->getKeyColor()) {
-				pixel -= cursor->getPaletteStartIndex();
-
 				if (_bytesPerPixel == 2)
 					WRITE_UINT16(_grabbedCursor + (y * _cursor.width + x) * 2, get16BitColor(palette[pixel * 3], palette[pixel * 3 + 1], palette[pixel * 3 + 2]));
 				else

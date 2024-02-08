@@ -1347,7 +1347,7 @@ void MacWindowManager::pushCustomCursor(const Graphics::Cursor *cursor) {
 	                     cursor->getHotspotY(), cursor->getKeyColor());
 
 	if (cursor->getPalette())
-		CursorMan.pushCursorPalette(cursor->getPalette(), cursor->getPaletteStartIndex(), cursor->getPaletteCount());
+		CursorMan.pushCursorPalette(cursor->getPalette(), 0, cursor->getPaletteCount());
 	else
 		CursorMan.pushCursorPalette(cursorPalette, 0, 2);
 

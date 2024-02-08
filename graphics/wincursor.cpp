@@ -50,7 +50,6 @@ public:
 	const byte *getMask() const override { return _mask; }
 
 	const byte *getPalette() const override { return _palette.data; }
-	byte getPaletteStartIndex() const override { return 0; }
 	uint16 getPaletteCount() const override { return _palette.size; }
 
 	/** Read the cursor's data out of a stream. */
@@ -364,14 +363,14 @@ public:
 
 	const byte *getPalette() const override {
 		static const byte bwPalette[] = {
-			0x00, 0x00, 0x00,	// Black
+			0xFF, 0x00, 0xFF, // Key
+			0x00, 0x00, 0x00, // Black
 			0xFF, 0xFF, 0xFF	// White
 		};
 
 		return bwPalette;
 	}
-	byte getPaletteStartIndex() const override { return 1; }
-	uint16 getPaletteCount() const override { return 2; }
+	uint16 getPaletteCount() const override { return 3; }
 };
 
 Cursor *makeDefaultWinCursor() {
@@ -428,14 +427,14 @@ public:
 
 	const byte *getPalette() const override {
 		static const byte bwPalette[] = {
+			0xFF, 0x00, 0xFF,	// Key
 			0x00, 0x00, 0x00,	// Black
 			0xFF, 0xFF, 0xFF	// White
 		};
 
 		return bwPalette;
 	}
-	byte getPaletteStartIndex() const override { return 1; }
-	uint16 getPaletteCount() const override { return 2; }
+	uint16 getPaletteCount() const override { return 3; }
 };
 
 Cursor *makeBusyWinCursor() {

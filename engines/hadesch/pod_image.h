@@ -49,7 +49,6 @@ public:
 	byte getKeyColor() const override;
 	const byte *getSurface() const override;
 	const byte *getPalette() const override;
-	byte getPaletteStartIndex() const override;
 	uint16 getPaletteCount() const override;
 
 	~PodImage();

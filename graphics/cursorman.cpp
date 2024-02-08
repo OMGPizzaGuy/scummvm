@@ -185,7 +185,7 @@ void CursorManager::replaceCursor(const Graphics::Cursor *cursor) {
 				  cursor->getHotspotY(), cursor->getKeyColor(), false, nullptr, cursor->getMask());
 
 	if (cursor->getPalette())
-		replaceCursorPalette(cursor->getPalette(), cursor->getPaletteStartIndex(), cursor->getPaletteCount());
+		replaceCursorPalette(cursor->getPalette(), 0, cursor->getPaletteCount());
 }
 
 bool CursorManager::supportsCursorPalettes() {
