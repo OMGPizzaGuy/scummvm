@@ -1071,7 +1071,7 @@ void GfxScreen::setPalette(const byte *buffer, uint start, uint num, bool update
 		}
 		// CHECKME: Inside or outside the if (update)?
 		// (The !update case only happens inside transitions.)
-		CursorMan.replaceCursorPalette(_palette, 0, 256);
+		CursorMan.replaceCursorPalette(_palette, 256);
 	}
 }
 

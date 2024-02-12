@@ -395,7 +395,7 @@ void ThemeEngine::refresh() {
 
 		if (_useCursor) {
 			if (_cursorPalSize)
-				CursorMan.replaceCursorPalette(_cursorPal, 0, _cursorPalSize);
+				CursorMan.replaceCursorPalette(_cursorPal, _cursorPalSize);
 			CursorMan.replaceCursor(_cursor, _cursorWidth, _cursorHeight, _cursorHotspotX, _cursorHotspotY, _cursorTransparent, true, &_cursorFormat);
 		}
 	}
@@ -2121,7 +2121,7 @@ Common::String ThemeEngine::getThemeId(const Common::Path &filename) {
 void ThemeEngine::showCursor() {
 	if (_useCursor) {
 		if (_cursorPalSize)
-			CursorMan.pushCursorPalette(_cursorPal, 0, _cursorPalSize);
+			CursorMan.pushCursorPalette(_cursorPal, _cursorPalSize);
 		CursorMan.pushCursor(_cursor, _cursorWidth, _cursorHeight, _cursorHotspotX, _cursorHotspotY, _cursorTransparent, true, &_cursorFormat);
 		CursorMan.showMouse(true);
 	}

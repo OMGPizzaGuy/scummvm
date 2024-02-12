@@ -330,7 +330,7 @@ void PrivateEngine::changeCursor(const Common::String &cursor) {
 		return;
 
 	CursorMan.replaceCursor(entry->buf, entry->w, entry->h, entry->hotspotX, entry->hotspotY, 0);
-	CursorMan.replaceCursorPalette(cursorPalette, 0, 3);
+	CursorMan.replaceCursorPalette(cursorPalette, 3);
 	CursorMan.showMouse(true);
 }
 

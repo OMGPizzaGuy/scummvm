@@ -143,7 +143,7 @@ Common::Error PlumbersGame::run() {
 		CursorMan.replaceCursor(MOUSECURSOR_SCI, 11, 16, 0, 0, 0);
 	else
 		CursorMan.replaceCursor(MOUSECURSOR_AMIGA, 8, 12, 0, 0, 0);
-	CursorMan.replaceCursorPalette(cursorPalette, 0, 3);
+	CursorMan.replaceCursorPalette(cursorPalette, 3);
 	CursorMan.showMouse(true);
 
 	readTables();

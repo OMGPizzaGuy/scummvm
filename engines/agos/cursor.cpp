@@ -797,7 +797,7 @@ void AGOSEngine::initMouse() {
 
 	memset(_mouseData, 0xFF, _maxCursorWidth * _maxCursorHeight);
 
-	CursorMan.replaceCursorPalette(mouseCursorPalette, 0, ARRAYSIZE(mouseCursorPalette) / 3);
+	CursorMan.replaceCursorPalette(mouseCursorPalette, ARRAYSIZE(mouseCursorPalette) / 3);
 }
 
 void AGOSEngine::drawMousePointer() {

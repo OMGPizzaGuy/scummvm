@@ -686,7 +686,7 @@ void Screen::setColor63(byte value) {
 void Screen::changeCursor(ResourceManager::CursorId id) {
 	CursorMan.replaceCursor(_resMan->getCursor(id),
 							16, 16, 0, 0, kColorCursorTransparent);
-	CursorMan.replaceCursorPalette(initVGAPalette, 0, 16);
+	CursorMan.replaceCursorPalette(initVGAPalette, 16);
 	CursorMan.showMouse(true);
 }
 

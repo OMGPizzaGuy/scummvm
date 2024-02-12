@@ -768,7 +768,7 @@ void GuiManager::setupCursor() {
 		 87,  87,  87
 	};
 
-	CursorMan.pushCursorPalette(palette, 0, 4);
+	CursorMan.pushCursorPalette(palette, 4);
 	CursorMan.pushCursor(nullptr, 0, 0, 0, 0, 0);
 	CursorMan.showMouse(true);
 }

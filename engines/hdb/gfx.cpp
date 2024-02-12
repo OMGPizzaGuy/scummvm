@@ -186,7 +186,7 @@ void Gfx::init() {
 	setCursor(0, 0);
 
 	if (g_hdb->isPPC()) {
-		CursorMan.replaceCursorPalette(cursorPalette, 0, 16);
+		CursorMan.replaceCursorPalette(cursorPalette, 16);
 		CursorMan.replaceCursor(cursorData, 32, 32, 16, 16, 3);
 	}
 

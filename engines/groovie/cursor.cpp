@@ -112,7 +112,7 @@ Cursor_t7g::Cursor_t7g(uint8 *img, uint8 *pal) :
 
 void Cursor_t7g::enable() {
 	// Apply the palette
-	CursorMan.replaceCursorPalette(_pal, 0, 32);
+	CursorMan.replaceCursorPalette(_pal, 32);
 }
 
 void Cursor_t7g::showFrame(uint16 frame) {

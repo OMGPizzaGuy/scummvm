@@ -915,7 +915,7 @@ bool OSystem_SDL::setGraphicsMode(int mode, uint flags) {
 
 		// Next setup cursor palette if needed
 		if (_graphicsManager->getFeatureState(kFeatureCursorPalette)) {
-			CursorMan.pushCursorPalette(nullptr, 0, 0);
+			CursorMan.pushCursorPalette(nullptr, 0);
 			CursorMan.popCursorPalette();
 		}
 

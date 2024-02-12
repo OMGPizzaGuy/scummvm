@@ -210,7 +210,7 @@ void GfxMgr::initVideo() {
 	setPalette(true); // set gfx-mode palette
 
 	// set up mouse cursor palette
-	CursorMan.replaceCursorPalette(MOUSECURSOR_PALETTE, 1, ARRAYSIZE(MOUSECURSOR_PALETTE) / 3);
+	CursorMan.replaceCursorPalette(MOUSECURSOR_PALETTE, ARRAYSIZE(MOUSECURSOR_PALETTE) / 3);
 	setMouseCursor();
 }
 

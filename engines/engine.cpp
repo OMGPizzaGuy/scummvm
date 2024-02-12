@@ -177,7 +177,7 @@ Engine::Engine(OSystem *syst)
 	CursorMan.pushCursor(NULL, 0, 0, 0, 0, 0);
 	// Note: Using this dummy palette will actually disable cursor
 	// palettes till the user enables it again.
-	CursorMan.pushCursorPalette(NULL, 0, 0);
+	CursorMan.pushCursorPalette(NULL, 0);
 
 	defaultSyncSoundSettings();
 }

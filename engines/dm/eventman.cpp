@@ -422,7 +422,7 @@ void EventManager::initMouse() {
 		mousePalette[i * 3 + 1] = (gK150_PalMousePointer[i] >> 4) * (256 / 16);
 		mousePalette[i * 3 + 2] = gK150_PalMousePointer[i] * (256 / 16);
 	}
-	CursorMan.pushCursorPalette(mousePalette, 0, 16);
+	CursorMan.pushCursorPalette(mousePalette, 16);
 
 	_mousePos = Common::Point(0, 0);
 	buildpointerScreenArea(_mousePos.x, _mousePos.y);

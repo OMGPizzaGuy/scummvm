@@ -179,7 +179,7 @@ void GfxCursor::kernelSetShape(GuiResourceId resourceId) {
 	if (g_system->getScreenFormat().bytesPerPixel != 1) {
 		byte buf[3*256];
 		_screen->grabPalette(buf, 0, 256);
-		CursorMan.replaceCursorPalette(buf, 0, 256);
+		CursorMan.replaceCursorPalette(buf, 256);
 	}
 
 	kernelShow();
@@ -256,7 +256,7 @@ void GfxCursor::kernelSetView(GuiResourceId viewNum, int loopNum, int celNum, Co
 	if (g_system->getScreenFormat().bytesPerPixel != 1) {
 		byte buf[3*256];
 		_screen->grabPalette(buf, 0, 256);
-		CursorMan.replaceCursorPalette(buf, 0, 256);
+		CursorMan.replaceCursorPalette(buf, 256);
 	}
 
 	kernelShow();
@@ -413,7 +413,7 @@ void GfxCursor::refreshPosition() {
 		if (g_system->getScreenFormat().bytesPerPixel != 1) {
 			byte buf[3*256];
 			_screen->grabPalette(buf, 0, 256);
-			CursorMan.replaceCursorPalette(buf, 0, 256);
+			CursorMan.replaceCursorPalette(buf, 256);
 		}
 	}
 }
@@ -545,7 +545,7 @@ void GfxCursor::kernelSetMacCursor(GuiResourceId viewNum, int loopNum, int celNu
 
 		// CursorMan.replaceCursor() does this when called with just a Graphics::Cursor
 		if (macCursor->getPalette()) {
-			CursorMan.replaceCursorPalette(macCursor->getPalette(), 0, macCursor->getPaletteCount());
+			CursorMan.replaceCursorPalette(macCursor->getPalette(), macCursor->getPaletteCount());
 		}
 	} else {
 		CursorMan.replaceCursor(macCursor);

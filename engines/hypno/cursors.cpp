@@ -141,9 +141,9 @@ void HypnoEngine::changeCursor(const Common::String &cursor) {
 	assert(entry->name);
 
 	if (cursor == "default")
-		CursorMan.replaceCursorPalette(sciCursorPalette, 0, 3);
+		CursorMan.replaceCursorPalette(sciCursorPalette, 3);
 	else
-		CursorMan.replaceCursorPalette(cursorPalette, 0, 3);
+		CursorMan.replaceCursorPalette(cursorPalette, 3);
 	CursorMan.replaceCursor(entry->buf, entry->w, entry->h, entry->hotspotX, entry->hotspotY, 0);
 	CursorMan.showMouse(true);
 }
@@ -154,7 +154,7 @@ void HypnoEngine::changeCursor(const Common::String &cursor, uint32 n, bool cent
 	uint32 hotspotX = centerCursor ? entry->w / 2 : 0;
 	uint32 hotspotY = centerCursor ? entry->h / 2 : 0;
 	CursorMan.replaceCursor(*entry, hotspotX, hotspotY, 0, false);
-	CursorMan.replaceCursorPalette(palette, 0, 256);
+	CursorMan.replaceCursorPalette(palette, 256);
 	entry->free();
 	delete entry;
 	free(palette);
@@ -165,7 +165,7 @@ void HypnoEngine::changeCursor(const Graphics::Surface &entry, byte *palette, bo
 	uint32 hotspotX = centerCursor ? entry.w / 2 : 0;
 	uint32 hotspotY = centerCursor ? entry.h / 2 : 0;
 	CursorMan.replaceCursor(entry, hotspotX, hotspotY, 0, false);
-	CursorMan.replaceCursorPalette(palette, 0, 256);
+	CursorMan.replaceCursorPalette(palette, 256);
 	CursorMan.showMouse(true);
 }
 

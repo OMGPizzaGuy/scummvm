@@ -110,7 +110,7 @@ void GFXtests::initMousePalette() {
 	palette[6] = palette[7] = 255;
 	palette[8] = 0;
 
-	CursorMan.replaceCursorPalette(palette, 0, 3);
+	CursorMan.replaceCursorPalette(palette, 3);
 }
 
 static const byte MOUSECURSOR_SCI[] = {

@@ -520,7 +520,7 @@ void EventsManager::updateCursor() {
 	int xOffset = !_mouseLinuxFl ? 10 : 20;
 
 	// Set the ScummVM cursor from the surface
-	CursorMan.replaceCursorPalette(cursorPalette, 0, PALETTE_SIZE - 1);
+	CursorMan.replaceCursorPalette(cursorPalette, PALETTE_SIZE - 1);
 	CursorMan.replaceCursor(cursorSurface, _vm->_objectsMan->getObjectWidth(), _vm->_objectsMan->getObjectHeight(),
 		xOffset, 0, 0, false);
 

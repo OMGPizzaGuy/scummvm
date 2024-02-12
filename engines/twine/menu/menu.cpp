@@ -884,7 +884,7 @@ bool Menu::init() {
 	memset(_plasmaEffectPtr, 0, kPlasmaEffectFilesize);
 
 	CursorMan.pushCursor(cursorArrow, 11, 16, 1, 1, 3);
-	CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+	CursorMan.pushCursorPalette(cursorPalette, 2);
 	return HQR::getEntry(_plasmaEffectPtr, Resources::HQR_RESS_FILE, RESSHQR_PLASMAEFFECT) > 0;
 }
 

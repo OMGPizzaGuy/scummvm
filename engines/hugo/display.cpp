@@ -137,7 +137,7 @@ void Screen::createPal() {
 
 void Screen::setCursorPal() {
 	debugC(1, kDebugDisplay, "setCursorPal");
-	CursorMan.replaceCursorPalette(_curPalette, 0, _paletteSize / 3);
+	CursorMan.replaceCursorPalette(_curPalette, _paletteSize / 3);
 }
 
 /**

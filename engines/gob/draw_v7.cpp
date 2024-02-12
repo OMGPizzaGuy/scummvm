@@ -101,7 +101,6 @@ bool Draw_v7::loadCursorFromFile(Common::String cursorName) {
 							&_vm->getPixelFormat(),
 							cursor->getMask());
 	CursorMan.replaceCursorPalette(cursor->getPalette(),
-								   0,
 								   cursor->getPaletteCount());
 	CursorMan.disableCursorPalette(false);
 

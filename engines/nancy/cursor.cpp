@@ -288,7 +288,7 @@ void CursorManager::applyCursor() {
 		if (g_nancy->getGameType() == kGameTypeVampire) {
 			byte palette[3 * 256];
 			surf->grabPalette(palette, 0, 256);
-			CursorMan.replaceCursorPalette(palette, 0, 256);
+			CursorMan.replaceCursorPalette(palette, 256);
 		}
 
 		_lastCursorID = _curCursorID;

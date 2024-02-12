@@ -106,7 +106,7 @@ void ResExtractor::setCursor(int id) {
 	}
 
 	if (cc->palette)
-		CursorMan.replaceCursorPalette(cc->palette, 0, cc->palSize);
+		CursorMan.replaceCursorPalette(cc->palette, cc->palSize);
 
 	_vm->setCursorHotspot(cc->hotspotX, cc->hotspotY);
 	_vm->setCursorFromBuffer(cc->bitmap, cc->width, cc->height, cc->width);

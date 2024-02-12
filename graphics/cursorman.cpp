@@ -185,7 +185,7 @@ void CursorManager::replaceCursor(const Graphics::Cursor *cursor) {
 				  cursor->getHotspotY(), cursor->getKeyColor(), false, nullptr, cursor->getMask());
 
 	if (cursor->getPalette())
-		replaceCursorPalette(cursor->getPalette(), 0, cursor->getPaletteCount());
+		replaceCursorPalette(cursor->getPalette(), cursor->getPaletteCount());
 }
 
 bool CursorManager::supportsCursorPalettes() {
@@ -205,15 +205,15 @@ void CursorManager::disableCursorPalette(bool disable) {
 	g_system->setFeatureState(OSystem::kFeatureCursorPalette, !disable);
 }
 
-void CursorManager::pushCursorPalette(const byte *colors, uint start, uint num) {
+void CursorManager::pushCursorPalette(const byte *colors, uint num) {
 	if (!g_system->hasFeature(OSystem::kFeatureCursorPalette))
 		return;
 
-	Palette *pal = new Palette(colors, start, num);
+	Palette *pal = new Palette(colors, num);
 	_cursorPaletteStack.push(pal);
 
 	if (num)
-		g_system->setCursorPalette(colors, start, num);
+		g_system->setCursorPalette(colors, 0, num);
 	else
 		g_system->setFeatureState(OSystem::kFeatureCursorPalette, false);
 }
@@ -236,17 +236,17 @@ void CursorManager::popCursorPalette() {
 	pal = _cursorPaletteStack.top();
 
 	if (pal->_num && !pal->_disabled)
-		g_system->setCursorPalette(pal->_data, pal->_start, pal->_num);
+		g_system->setCursorPalette(pal->_data, 0, pal->_num);
 	else
 		g_system->setFeatureState(OSystem::kFeatureCursorPalette, false);
 }
 
-void CursorManager::replaceCursorPalette(const byte *colors, uint start, uint num) {
+void CursorManager::replaceCursorPalette(const byte *colors, uint num) {
 	if (!g_system->hasFeature(OSystem::kFeatureCursorPalette))
 		return;
 
 	if (_cursorPaletteStack.empty()) {
-		pushCursorPalette(colors, start, num);
+		pushCursorPalette(colors, num);
 		return;
 	}
 
@@ -260,12 +260,11 @@ void CursorManager::replaceCursorPalette(const byte *colors, uint start, uint nu
 		pal->_size = size;
 	}
 
-	pal->_start = start;
 	pal->_num = num;
 
 	if (num) {
 		memcpy(pal->_data, colors, size);
-		g_system->setCursorPalette(pal->_data, pal->_start, pal->_num);
+		g_system->setCursorPalette(pal->_data, 0, pal->_num);
 	} else {
 		g_system->setFeatureState(OSystem::kFeatureCursorPalette, false);
 	}
@@ -303,8 +302,7 @@ CursorManager::Cursor::~Cursor() {
 	delete[] _mask;
 }
 
-CursorManager::Palette::Palette(const byte *colors, uint start, uint num) {
-	_start = start;
+CursorManager::Palette::Palette(const byte *colors, uint num) {
 	_num = num;
 	_size = 3 * num;
 

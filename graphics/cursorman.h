@@ -199,19 +199,18 @@ public:
 	/**
 	 * Push a new cursor palette onto the stack, and set it in the backend.
 	 *
-	 * The palette entries from @p start until @c (start+num-1) will be replaced
-	 * so a full palette update is accomplished via start=0, num=256.
+	 * The palette entries until @c (num-1) will be replaced
+	 * so a full palette update is accomplished via num=256.
 	 *
 	 * The palette data is specified in the same interleaved RGB format as
 	 * used by all backends.
 	 *
 	 * @param colors	New palette data, in interleaved RGB format.
-	 * @param start		First palette entry to be updated.
 	 * @param num		Number of palette entries to be updated.
 	 *
 	 * @note If num is zero, the cursor palette is disabled.
 	 */
-	void pushCursorPalette(const byte *colors, uint start, uint num);
+	void pushCursorPalette(const byte *colors, uint num);
 
 	/**
 	 * Pop a cursor palette from the stack, and restore the previous one to
@@ -228,12 +227,11 @@ public:
 	 * more optimized way of popping the old palette before pushing the new one.
 	 *
 	 * @param colors	New palette data, in interleaved RGB format.
-	 * @param start		First palette entry to be updated.
 	 * @param num		Number of palette entries to be updated.
 	 *
 	 * @note If num is zero, the cursor palette is disabled.
 	 */
-	void replaceCursorPalette(const byte *colors, uint start, uint num);
+	void replaceCursorPalette(const byte *colors, uint num);
 
 	/**
 	 * Lock or unlock the visibility state of the cursor.
@@ -275,15 +273,14 @@ private:
 
 	struct Palette {
 		byte *_data;
-		uint _start;
 		uint _num;
 		uint _size;
 
 		bool _disabled;
 
-		Palette() : _data(0), _start(0), _num(0), _size(0), _disabled(false) {}
+		Palette() : _data(0), _num(0), _size(0), _disabled(false) {}
 
-		Palette(const byte *colors, uint start, uint num);
+		Palette(const byte *colors, uint num);
 		~Palette();
 	};
 	Common::Stack<Cursor *> _cursorStack;

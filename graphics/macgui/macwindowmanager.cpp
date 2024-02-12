@@ -1257,27 +1257,27 @@ void MacWindowManager::pushCursor(MacCursorType type, Cursor *cursor) {
 	switch (type) {
 	case kMacCursorOff:
 		CursorMan.pushCursor(nullptr, 0, 0, 0, 0, 0);
-		CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+		CursorMan.pushCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorArrow:
 		CursorMan.pushCursor(macCursorArrow, 11, 16, 1, 1, 3);
-		CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+		CursorMan.pushCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorBeam:
 		CursorMan.pushCursor(macCursorBeam, 11, 16, 1, 1, 3);
-		CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+		CursorMan.pushCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorCrossHair:
 		CursorMan.pushCursor(macCursorCrossHair, 11, 16, 1, 1, 3);
-		CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+		CursorMan.pushCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorCrossBar:
 		CursorMan.pushCursor(macCursorCrossBar, 11, 16, 1, 1, 3);
-		CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+		CursorMan.pushCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorWatch:
 		CursorMan.pushCursor(macCursorWatch, 11, 16, 1, 1, 3);
-		CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+		CursorMan.pushCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorCustom:
 		if (!cursor) {
@@ -1295,27 +1295,27 @@ void MacWindowManager::replaceCursor(MacCursorType type, Cursor *cursor) {
 	switch (type) {
 	case kMacCursorOff:
 		CursorMan.replaceCursor(nullptr, 0, 0, 0, 0, 0);
-		CursorMan.replaceCursorPalette(cursorPalette, 0, 2);
+		CursorMan.replaceCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorArrow:
 		CursorMan.replaceCursor(macCursorArrow, 11, 16, 1, 1, 3);
-		CursorMan.replaceCursorPalette(cursorPalette, 0, 2);
+		CursorMan.replaceCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorBeam:
 		CursorMan.replaceCursor(macCursorBeam, 11, 16, 1, 1, 3);
-		CursorMan.replaceCursorPalette(cursorPalette, 0, 2);
+		CursorMan.replaceCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorCrossHair:
 		CursorMan.replaceCursor(macCursorCrossHair, 11, 16, 1, 1, 3);
-		CursorMan.replaceCursorPalette(cursorPalette, 0, 2);
+		CursorMan.replaceCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorCrossBar:
 		CursorMan.replaceCursor(macCursorCrossBar, 11, 16, 1, 1, 3);
-		CursorMan.replaceCursorPalette(cursorPalette, 0, 2);
+		CursorMan.replaceCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorWatch:
 		CursorMan.replaceCursor(macCursorWatch, 11, 16, 1, 1, 3);
-		CursorMan.replaceCursorPalette(cursorPalette, 0, 2);
+		CursorMan.replaceCursorPalette(cursorPalette, 2);
 		break;
 	case kMacCursorCustom:
 		if (!cursor) {
@@ -1332,13 +1332,13 @@ void MacWindowManager::replaceCursor(MacCursorType type, Cursor *cursor) {
 
 void MacWindowManager::pushCustomCursor(const byte *data, int w, int h, int hx, int hy, int transcolor) {
 	CursorMan.pushCursor(data, w, h, hx, hy, transcolor);
-	CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+	CursorMan.pushCursorPalette(cursorPalette, 2);
 	_cursorTypeStack.push(kMacCursorCustom);
 }
 
 void MacWindowManager::replaceCustomCursor(const byte *data, int w, int h, int hx, int hy, int transcolor) {
 	CursorMan.replaceCursor(data, w, h, hx, hy, transcolor);
-	CursorMan.replaceCursorPalette(cursorPalette, 0, 2);
+	CursorMan.replaceCursorPalette(cursorPalette, 2);
 	replaceCursorType(kMacCursorCustom);
 }
 
@@ -1347,9 +1347,9 @@ void MacWindowManager::pushCustomCursor(const Graphics::Cursor *cursor) {
 	                     cursor->getHotspotY(), cursor->getKeyColor());
 
 	if (cursor->getPalette())
-		CursorMan.pushCursorPalette(cursor->getPalette(), 0, cursor->getPaletteCount());
+		CursorMan.pushCursorPalette(cursor->getPalette(), cursor->getPaletteCount());
 	else
-		CursorMan.pushCursorPalette(cursorPalette, 0, 2);
+		CursorMan.pushCursorPalette(cursorPalette, 2);
 
 	_cursorTypeStack.push(kMacCursorCustom);
 }
