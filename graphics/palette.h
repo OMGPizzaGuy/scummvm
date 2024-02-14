@@ -122,7 +122,7 @@ namespace Graphics {
  * looks like this: R1-G1-B1-R2-G2-B2-R3-...
  */
 struct Palette {
-	byte data[256 * 3];
+	byte *data;
 	uint size;
 
 	/**
@@ -130,9 +130,16 @@ struct Palette {
 	 *
 	 * @param num   the number of palette entries
 	 */
-	Palette(uint num = 0);
+	Palette(uint num);
 
+	/**
+	 * @brief Construct a new Palette object from an existing Palette
+	 *
+	 * @param p   the existing palette to copy
+	 */
 	Palette(const Palette &p);
+
+	~Palette();
 
 	bool operator==(const Palette &rhs) const { return equals(rhs); }
 	bool operator!=(const Palette &rhs) const { return !equals(rhs); }
@@ -146,13 +153,13 @@ struct Palette {
 	/**
 	 * Replace the specified range of the palette with new colors.
 	 * The palette entries from 'start' till (start+num-1) will be replaced - so
-	 * a full palette update is accomplished via start=0, num=256.
+	 * a full palette update is accomplished via start=0, num=size.
 	 *
 	 * @param colors	the new palette data, in interleaved RGB format
 	 * @param start		the first palette entry to be updated
 	 * @param num		the number of palette entries to be updated
 	 *
-	 * @note It is an error if start+num exceeds 256.
+	 * @note It is an error if start+num exceeds size.
 	 */
 	void set(const byte *colors, uint start, uint num);
 	void set(const Palette &p, uint start, uint num);
@@ -165,7 +172,7 @@ struct Palette {
 	 * @param start		the first platte entry to be read
 	 * @param num		the number of palette entries to be read
 	 *
-	 * @note It is an error if start+num exceeds 256.
+	 * @note It is an error if start+num exceeds size.
 	 */
 	void grab(byte *colors, uint start, uint num) const;
 	void grab(Palette &p, uint start, uint num) const;

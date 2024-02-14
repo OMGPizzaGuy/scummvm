@@ -22,12 +22,21 @@
 
 namespace Graphics {
 
-Palette::Palette(uint num) : size(num) {
-	memset(data, 0, sizeof(data));
+Palette::Palette(uint num) : data(nullptr), size(num) {
+	if (size > 0) {
+		data = new byte[size * 3]();
+	}
 }
 
-Palette::Palette(const Palette &p) : size(p.size) {
-	memcpy(data, p.data, size * 3);
+Palette::Palette(const Palette &p) : data(nullptr), size(p.size) {
+	if (size > 0) {
+		data = new byte[size * 3]();
+		memcpy(data, p.data, size * 3);
+	}
+}
+
+Palette::~Palette() {
+	delete[] data;
 }
 
 bool Palette::equals(const Palette &p) const {
@@ -39,36 +48,31 @@ bool Palette::contains(const Palette& p) const {
 }
 
 void Palette::clear() {
-	memset(data, 0, sizeof(data));
+	if (size > 0)
+		memset(data, 0, size);
 }
 
 void Palette::set(const byte *colors, uint start, uint num) {
-	assert(start < 256 && (start + num) <= 256);
-	if (size < start + num)
-		size = start + num;
+	assert(start < size && (start + num) <= size);
 	memcpy(data + 3 * start, colors, 3 * num);
 }
 
 void Palette::set(const Palette &p, uint start, uint num) {
-	assert(start < 256 && (start + num) <= 256);
-	if (size < start + num)
-		size = start + num;
+	assert(start < size && (start + num) <= size);
 	memcpy(data + 3 * start, p.data, 3 * num);
 }
 
 void Palette::grab(byte *colors, uint start, uint num) const {
-	assert(start < 256 && (start + num) <= 256);
+	assert(start < size && (start + num) <= size);
 	memcpy(colors, data + 3 * start, 3 * num);
 }
 
 void Palette::grab(Palette &p, uint start, uint num) const {
-	assert(start < 256 && (start + num) <= 256);
-	if (p.size < num)
-		p.size = num;
+	assert(start < size && (start + num) <= size);
 	memcpy(p.data, data + 3 * start, 3 * num);
 }
 
-PaletteLookup::PaletteLookup(): _palette() {
+PaletteLookup::PaletteLookup(): _palette(256) {
 }
 
 PaletteLookup::PaletteLookup(const Palette &palette): _palette(palette) {
@@ -95,7 +99,6 @@ bool PaletteLookup::setPalette(const byte *palette, uint len) {
 		return false;
 
 	_palette.set(palette, 0, len);
-	_palette.size = len;
 	_colorHash.clear();
 
 	return true;
