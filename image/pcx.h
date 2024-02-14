@@ -58,13 +58,14 @@ public:
 	virtual bool loadStream(Common::SeekableReadStream &stream);
 	virtual const Graphics::Surface *getSurface() const { return _surface; }
 	const byte *getPalette() const { return _palette.data; }
-	uint16 getPaletteColorCount() const { return _palette.size; }
+	uint16 getPaletteColorCount() const { return _paletteColorCount; }
 
 private:
 	void decodeRLE(Common::SeekableReadStream &stream, byte *dst, uint32 bytesPerScanline, bool compressed);
 
 	Graphics::Surface *_surface;
 	Graphics::Palette _palette;
+	uint16 _paletteColorCount;
 };
 /** @} */
 } // End of namespace Image
