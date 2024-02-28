@@ -49,9 +49,9 @@ public:
 	const byte *getSurface() const override { return _surface; }
 	const byte *getMask() const override { return _mask; }
 
-	const byte *getPalette() const override { return _palette.data; }
+	const byte *getPalette() const override { return _palette.data(); }
 	byte getPaletteStartIndex() const override { return 0; }
-	uint16 getPaletteCount() const override { return _palette.size; }
+	uint16 getPaletteCount() const override { return _palette.size(); }
 
 	/** Read the cursor's data out of a stream. */
 	bool readFromStream(Common::SeekableReadStream &stream);
@@ -148,10 +148,11 @@ bool WinCursor::readFromStream(Common::SeekableReadStream &stream) {
 	// Reading the palette
 	stream.seek(40 + 4);
 	for (uint32 i = 0 ; i < numColors; i++) {
-		_palette.data[i * 3 + 2] = stream.readByte();
-		_palette.data[i * 3 + 1] = stream.readByte();
-		_palette.data[i * 3] = stream.readByte();
+		byte b = stream.readByte();
+		byte g = stream.readByte();
+		byte r = stream.readByte();
 		stream.readByte();
+		_palette.set(i, r, g, b);
 	}
 
 	// Reading the bitmap data
@@ -229,7 +230,7 @@ bool WinCursor::readFromStream(Common::SeekableReadStream &stream) {
 		for (uint32 x = 0; x < _width; x++) {
 			byte &surfaceByte = _surface[y * _width + x];
 			if (src[x / 8] & (1 << (7 - x % 8))) {
-				const byte *paletteEntry = &_palette.data[surfaceByte * 3];
+				const byte *paletteEntry = &_palette.data()[surfaceByte * 3];
 
 				// Per WDDM spec, white with 1 in the AND mask is inverted, any other color with 1 is transparent.
 				// Riven depends on this behavior for proper cursor transparency, since it uses cursors where the

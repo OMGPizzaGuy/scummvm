@@ -103,7 +103,7 @@ protected:
 		int getCurFrame() const { return _curFrame; }
 		int getFrameCount() const { return _frameCount; }
 		const Graphics::Surface *decodeNextFrame() { return _surface; }
-		const byte *getPalette() const { _dirtyPalette = false; return _palette.data; }
+		const byte *getPalette() const { _dirtyPalette = false; return _palette.data(); }
 		bool hasDirtyPalette() const { return _dirtyPalette; }
 
 		void readTrees(SmackerBitStream &bs, uint32 mMapSize, uint32 mClrSize, uint32 fullSize, uint32 typeSize);

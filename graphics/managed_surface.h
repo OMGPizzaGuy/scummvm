@@ -33,7 +33,7 @@
 
 namespace Graphics {
 
-struct Palette;
+class Palette;
 
 /**
  * @defgroup graphics_managed_surface Managed surface

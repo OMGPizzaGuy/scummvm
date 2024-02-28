@@ -78,7 +78,7 @@ protected:
 		uint32 getNextFrameStartTime() const { return _nextFrameStartTime; }
 		virtual const Graphics::Surface *decodeNextFrame();
 		virtual void handleFrame();
-		const byte *getPalette() const { _dirtyPalette = false; return _palette.data; }
+		const byte *getPalette() const { _dirtyPalette = false; return _palette.data(); }
 		bool hasDirtyPalette() const { return _dirtyPalette; }
 
 		const Common::List<Common::Rect> *getDirtyRects() const { return &_dirtyRects; }

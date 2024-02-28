@@ -353,7 +353,7 @@ void HNMDecoder::HNM45VideoTrack::decodePalette(byte *data, uint32 size) {
 			error("Not enough data for palette");
 		}
 
-		byte *palette_ptr = &_palette.data[start * 3];
+		byte *palette_ptr = &_palette.data()[start * 3];
 		for (; count > 0; count--) {
 			byte r = *(data++);
 			byte g = *(data++);

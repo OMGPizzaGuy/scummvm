@@ -52,7 +52,7 @@ public:
 	Graphics::Surface *decodeFrame(Common::SeekableReadStream &stream) override;
 	Graphics::PixelFormat getPixelFormat() const override { return Graphics::PixelFormat::createFormatCLUT8(); }
 	bool containsPalette() const override { return true; }
-	const byte *getPalette() override { _dirtyPalette = false; return _palette.data; }
+	const byte *getPalette() override { _dirtyPalette = false; return _palette.data(); }
 	bool hasDirtyPalette() const override { return _dirtyPalette; }
 
 private:

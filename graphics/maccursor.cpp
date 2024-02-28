@@ -151,9 +151,10 @@ bool MacCursor::readFromCRSR(Common::SeekableReadStream &stream, bool forceMonoc
 	// Read just high byte of 16-bit color
 	for (int c = 0; c < ctSize; c++) {
 		stream.readUint16BE();
-		_palette.data[c * 3 + 0] = stream.readUint16BE() >> 8;
-		_palette.data[c * 3 + 1] = stream.readUint16BE() >> 8;
-		_palette.data[c * 3 + 2] = stream.readUint16BE() >> 8;
+		byte r = stream.readUint16BE() >> 8;
+		byte g = stream.readUint16BE() >> 8;
+		byte b = stream.readUint16BE() >> 8;
+		_palette.set(c, r, g, b);
 	}
 
 	// Find black so that Macintosh black (255) can be remapped.

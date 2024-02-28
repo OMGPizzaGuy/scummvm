@@ -69,7 +69,7 @@ private:
 		int getCurFrame() const { return _curFrame; }
 		int getFrameCount() const { return _frameCount; }
 		const Graphics::Surface *decodeNextFrame();
-		const byte *getPalette() const { _dirtyPalette = false; return _palette.data; }
+		const byte *getPalette() const { _dirtyPalette = false; return _palette.data(); }
 		bool hasDirtyPalette() const { return _dirtyPalette; }
 
 		void setFrameStartPos();

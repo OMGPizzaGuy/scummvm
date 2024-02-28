@@ -464,7 +464,7 @@ void DXADecoder::DXAVideoTrack::decode13(int size) {
 const Graphics::Surface *DXADecoder::DXAVideoTrack::decodeNextFrame() {
 	uint32 tag = _fileStream->readUint32BE();
 	if (tag == MKTAG('C','M','A','P')) {
-		_fileStream->read(_palette.data, 256 * 3);
+		_fileStream->read(_palette.data(), 256 * 3);
 		_dirtyPalette = true;
 	}
 

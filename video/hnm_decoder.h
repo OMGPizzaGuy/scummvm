@@ -93,7 +93,7 @@ private:
 		uint16 getHeight() const override { return _surface.h; }
 		Graphics::PixelFormat getPixelFormat() const override { return _surface.format; }
 		const Graphics::Surface *decodeNextFrame() override { return &_surface; }
-		const byte *getPalette() const override { _dirtyPalette = false; return _palette.data; }
+		const byte *getPalette() const override { _dirtyPalette = false; return _palette.data(); }
 		bool hasDirtyPalette() const override { return _dirtyPalette; }
 
 		virtual void newFrame(uint32 frameDelay) override;

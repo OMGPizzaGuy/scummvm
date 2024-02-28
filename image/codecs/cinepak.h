@@ -78,7 +78,7 @@ public:
 	bool setOutputPixelFormat(const Graphics::PixelFormat &format) override;
 
 	bool containsPalette() const override { return _ditherPalette != 0; }
-	const byte *getPalette() override { _dirtyPalette = false; return _ditherPalette->data; }
+	const byte *getPalette() override { _dirtyPalette = false; return _ditherPalette->data(); }
 	bool hasDirtyPalette() const override { return _dirtyPalette; }
 	bool canDither(DitherType type) const override;
 	void setDither(DitherType type, const byte *palette) override;

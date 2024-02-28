@@ -64,9 +64,9 @@ public:
 	bool loadStream(Common::SeekableReadStream &stream);
 	void destroy();
 	const Graphics::Surface *getSurface() const { return _outputSurface; }
-	const byte *getPalette() const { return _palette.data; }
-	int getPaletteSize() const { return 256; }
-	uint16 getPaletteColorCount() const { return _palette.size; }
+	const byte *getPalette() const { return _palette.data(); }
+	int getPaletteSize() const { return _palette.size(); }
+	uint16 getPaletteColorCount() const { return _paletteColorCount; }
 
 	struct PixMap {
 		uint32 baseAddr;
@@ -92,6 +92,7 @@ public:
 private:
 	Common::Rect _imageRect;
 	Graphics::Palette _palette;
+	uint16 _paletteColorCount;
 	Graphics::Surface *_outputSurface;
 	bool _continueParsing;
 	int _version;

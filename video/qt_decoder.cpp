@@ -162,7 +162,7 @@ Common::QuickTimeParser::SampleDesc *QuickTimeDecoder::readSampleDesc(Common::Qu
 				int16 colorIndex = 255;
 				byte colorDec = 256 / (colorCount - 1);
 				for (uint16 j = 0; j < colorCount; j++) {
-					entry->_palette.data[j * 3] = entry->_palette.data[j * 3 + 1] = entry->_palette.data[j * 3 + 2] = colorIndex;
+					entry->_palette.set(j, colorIndex, colorIndex, colorIndex);
 					colorIndex -= colorDec;
 					if (colorIndex < 0)
 						colorIndex = 0;
@@ -191,12 +191,13 @@ Common::QuickTimeParser::SampleDesc *QuickTimeDecoder::readSampleDesc(Common::Qu
 					// up front
 					_fd->readByte();
 					_fd->readByte();
-					entry->_palette.data[j * 3] = _fd->readByte();
+					byte r = _fd->readByte();
 					_fd->readByte();
-					entry->_palette.data[j * 3 + 1] = _fd->readByte();
+					byte g = _fd->readByte();
 					_fd->readByte();
-					entry->_palette.data[j * 3 + 2] = _fd->readByte();
+					byte b = _fd->readByte();
 					_fd->readByte();
+					entry->_palette.set(j, r, g, b);
 				}
 			}
 
@@ -593,7 +594,7 @@ Audio::Timestamp QuickTimeDecoder::VideoTrackHandler::getFrameTime(uint frame) c
 
 const byte *QuickTimeDecoder::VideoTrackHandler::getPalette() const {
 	_dirtyPalette = false;
-	return _forcedDitherPalette ? _forcedDitherPalette->data : _curPalette;
+	return _forcedDitherPalette ? _forcedDitherPalette->data() : _curPalette;
 }
 
 bool QuickTimeDecoder::VideoTrackHandler::setReverse(bool reverse) {
@@ -844,7 +845,7 @@ const Graphics::Surface *QuickTimeDecoder::VideoTrackHandler::bufferNextFrame() 
 		}
 	} else {
 		// Check if the video description has been updated
-		byte *palette = entry->_palette.data;
+		byte *palette = entry->_palette.data();
 
 		if (palette != _curPalette) {
 			_curPalette = palette;
@@ -926,7 +927,7 @@ void QuickTimeDecoder::VideoTrackHandler::setDither(const byte *palette) {
 			// Forced dither
 			_forcedDitherPalette = new Graphics::Palette(256);
 			_forcedDitherPalette->set(palette, 0, 256);
-			_ditherTable = Image::Codec::createQuickTimeDitherTable(_forcedDitherPalette->data, 256);
+			_ditherTable = Image::Codec::createQuickTimeDitherTable(_forcedDitherPalette->data(), 256);
 			_dirtyPalette = true;
 		}
 	}
@@ -979,7 +980,7 @@ const Graphics::Surface *QuickTimeDecoder::VideoTrackHandler::forceDither(const 
 			return &frame;
 
 		// If the palettes match, bail out
-		if (_forcedDitherPalette && memcmp(_forcedDitherPalette->data, _curPalette, 256 * 3) == 0)
+		if (_forcedDitherPalette && memcmp(_forcedDitherPalette->data(), _curPalette, 256 * 3) == 0)
 			return &frame;
 	}
 

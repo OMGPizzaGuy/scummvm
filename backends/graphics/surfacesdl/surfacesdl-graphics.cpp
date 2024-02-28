@@ -1561,9 +1561,9 @@ bool SurfaceSdlGraphicsManager::saveScreenshot(const Common::Path &filename) con
 		}
 
 #ifdef USE_PNG
-		success = Image::writePNG(out, data, palette.data);
+		success = Image::writePNG(out, data, palette.data());
 #else
-		success = Image::writeBMP(out, data, palette.data);
+		success = Image::writeBMP(out, data, palette.data());
 #endif
 	} else {
 #ifdef USE_PNG

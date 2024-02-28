@@ -35,7 +35,7 @@ namespace Image {
 // https://developer.apple.com/library/archive/documentation/mac/QuickDraw/QuickDraw-461.html
 // https://developer.apple.com/library/archive/documentation/mac/QuickDraw/QuickDraw-269.html
 
-PICTDecoder::PICTDecoder() : _outputSurface(nullptr), _palette(0), _version(2) {
+PICTDecoder::PICTDecoder() : _outputSurface(nullptr), _palette(256), _version(2) {
 }
 
 PICTDecoder::~PICTDecoder() {
@@ -50,7 +50,7 @@ void PICTDecoder::destroy() {
 	}
 
 	_palette.clear();
-	_palette.size = 0;
+	_paletteColorCount = 0;
 }
 
 #define OPCODE(a, b, c) _opcodes.push_back(PICTOpcode(a, &PICTDecoder::b, c))
@@ -380,13 +380,14 @@ void PICTDecoder::unpackBitsRect(Common::SeekableReadStream &stream, bool withPa
 		// See https://developer.apple.com/library/archive/documentation/mac/QuickDraw/QuickDraw-267.html
 		stream.readUint32BE(); // seed
 		stream.readUint16BE(); // flags
-		_palette.size = stream.readUint16BE() + 1;
+		_paletteColorCount = stream.readUint16BE() + 1;
 
-		for (uint32 i = 0; i < _palette.size; i++) {
+		for (uint32 i = 0; i < _paletteColorCount; i++) {
 			stream.readUint16BE();
-			_palette.data[i * 3] = stream.readUint16BE() >> 8;
-			_palette.data[i * 3 + 1] = stream.readUint16BE() >> 8;
-			_palette.data[i * 3 + 2] = stream.readUint16BE() >> 8;
+			byte r = stream.readUint16BE() >> 8;
+			byte g = stream.readUint16BE() >> 8;
+			byte b = stream.readUint16BE() >> 8;
+			_palette.set(i, r, g, b);
 		}
 	}
 

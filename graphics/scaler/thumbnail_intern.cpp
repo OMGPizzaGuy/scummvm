@@ -184,7 +184,7 @@ static bool grabScreen565(Graphics::Surface *surf) {
 	if (screenFormat.bytesPerPixel == 1) {
 		palette = new Graphics::Palette(256);
 		assert(palette);
-		g_system->getPaletteManager()->grabPalette(palette->data, 0, palette->size);
+		g_system->getPaletteManager()->grabPalette(palette->data(), 0, palette->size());
 	}
 
 	for (int y = 0; y < screen->h; ++y) {
@@ -266,7 +266,7 @@ bool createThumbnail(Graphics::Surface *surf, Graphics::ManagedSurface *in) {
 	if (in->hasPalette()) {
 		Graphics::Palette palette(256);
 		in->grabPalette(palette, 0, 256);
-		return createThumbnail(surf, (const uint8 *)in->getPixels(), in->w, in->h, palette.data);
+		return createThumbnail(surf, (const uint8 *)in->getPixels(), in->w, in->h, palette.data());
 	} else {
 		screen.convertFrom(in->rawSurface(), Graphics::PixelFormat(2, 5, 6, 5, 0, 11, 5, 0, 0));
 		return createThumbnail(*surf, screen);

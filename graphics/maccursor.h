@@ -64,9 +64,9 @@ public:
 
 	const byte *getSurface() const { return _surface; }
 
-	virtual const byte *getPalette() const { return _palette.data; }
+	virtual const byte *getPalette() const { return _palette.data(); }
 	byte getPaletteStartIndex() const { return 0; }
-	uint16 getPaletteCount() const { return _palette.size; }
+	uint16 getPaletteCount() const { return _palette.size(); }
 
 	/** Read the cursor's data out of a stream. */
 	bool readFromStream(Common::SeekableReadStream &stream, bool forceMonochrome = false, byte monochromeInvertedPixelColor = 0xff, bool forceCURSFormat = false);

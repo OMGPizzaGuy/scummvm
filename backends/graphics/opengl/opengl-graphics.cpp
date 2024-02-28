@@ -519,7 +519,7 @@ OSystem::TransactionError OpenGLGraphicsManager::endGFXTransaction() {
 #endif
 		assert(_gameScreen);
 		if (_gameScreen->hasPalette()) {
-			_gameScreen->setPalette(0, 256, _gamePalette.data);
+			_gameScreen->setPalette(0, 256, _gamePalette.data());
 		}
 
 #ifdef USE_SCALERS
@@ -1667,9 +1667,9 @@ void OpenGLGraphicsManager::updateCursorPalette() {
 	}
 
 	if (_cursorPaletteEnabled) {
-		_cursor->setPalette(0, 256, _cursorPalette.data);
+		_cursor->setPalette(0, 256, _cursorPalette.data());
 	} else {
-		_cursor->setPalette(0, 256, _gamePalette.data);
+		_cursor->setPalette(0, 256, _gamePalette.data());
 	}
 
 	if (_cursorUseKey)

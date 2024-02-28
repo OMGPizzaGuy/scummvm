@@ -121,19 +121,23 @@ namespace Graphics {
  * (transparency) value. Then the second color starts, and so on. So memory
  * looks like this: R1-G1-B1-R2-G2-B2-R3-...
  */
-struct Palette {
+class Palette {
+	byte *_data;
+	uint16 _size;
+
+public:
 	static const uint16 npos = 0xFFFF;
-	byte data[256 * 3];
-	uint16 size;
 
 	/**
 	 * @brief Construct a new Palette object
 	 *
-	 * @param num   the number of palette entries
+	 * @param size   the number of palette entries
 	 */
-	Palette(uint num = 0);
+	Palette(uint size);
 
 	Palette(const Palette &p);
+
+	~Palette();
 
 	bool operator==(const Palette &rhs) const { return equals(rhs); }
 	bool operator!=(const Palette &rhs) const { return !equals(rhs); }
@@ -142,18 +146,22 @@ struct Palette {
 
 	bool contains(const Palette &p) const;
 
+	const byte *data() const { return _data; }
+	byte *data() { return _data; }
+	uint size() const { return _size; }
+
 	void set(uint entry, byte r, byte g, byte b) {
-		assert(entry < size);
-		data[entry * 3 + 0] = r;
-		data[entry * 3 + 1] = g;
-		data[entry * 3 + 2] = b;
+		assert(entry < _size);
+		_data[entry * 3 + 0] = r;
+		_data[entry * 3 + 1] = g;
+		_data[entry * 3 + 2] = b;
 	}
 
 	void get(uint entry, byte &r, byte &g, byte &b) const {
-		assert(entry < size);
-		r = data[entry * 3 + 0];
-		g = data[entry * 3 + 1];
-		b = data[entry * 3 + 2];
+		assert(entry < _size);
+		r = _data[entry * 3 + 0];
+		g = _data[entry * 3 + 1];
+		b = _data[entry * 3 + 2];
 	}
 
 	/**
@@ -162,8 +170,8 @@ struct Palette {
 	 * @return the palette index or npos if not found
 	 */
 	uint find(byte r, byte g, byte b) const {
-		for (uint i = 0; i < size; i++) {
-			if (data[i * 3 + 0] == r && data[i * 3 + 1] == g && data[i * 3 + 2] == b)
+		for (uint i = 0; i < _size; i++) {
+			if (_data[i * 3 + 0] == r && _data[i * 3 + 1] == g && _data[i * 3 + 2] == b)
 				return i;
 		}
 		return npos;

@@ -50,7 +50,7 @@ class QueuingAudioStream;
 }
 
 namespace Graphics {
-struct Palette;
+class Palette;
 struct PixelFormat;
 }
 

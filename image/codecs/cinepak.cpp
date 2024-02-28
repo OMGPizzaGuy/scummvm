@@ -670,15 +670,15 @@ byte CinepakDecoder::findNearestRGB(int index) const {
 	int diff = 0x7FFFFFFF;
 
 	for (int i = 0; i < 256; i++) {
-		int bDiff = b - (int)_ditherPalette->data[i * 3 + 2];
+		int bDiff = b - (int)_ditherPalette->data()[i * 3 + 2];
 		int curDiffB = diff - (bDiff * bDiff);
 
 		if (curDiffB > 0) {
-			int gDiff = g - (int)_ditherPalette->data[i * 3 + 1];
+			int gDiff = g - (int)_ditherPalette->data()[i * 3 + 1];
 			int curDiffG = curDiffB - (gDiff * gDiff);
 
 			if (curDiffG > 0) {
-				int rDiff = r - (int)_ditherPalette->data[i * 3];
+				int rDiff = r - (int)_ditherPalette->data()[i * 3];
 				int curDiffR = curDiffG - (rDiff * rDiff);
 
 				if (curDiffR > 0) {

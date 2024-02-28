@@ -40,7 +40,7 @@ class SeekableReadStream;
 }
 
 namespace Graphics {
-struct Palette;
+class Palette;
 struct PixelFormat;
 }
 

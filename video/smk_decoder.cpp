@@ -789,7 +789,7 @@ void SmackerDecoder::SmackerVideoTrack::unpackPalette(Common::SeekableReadStream
 
 	Graphics::Palette oldPalette = _palette;
 
-	byte *pal = _palette.data;
+	byte *pal = _palette.data();
 
 	int sz = 0;
 	byte b0;
@@ -804,9 +804,9 @@ void SmackerDecoder::SmackerVideoTrack::unpackPalette(Common::SeekableReadStream
 			sz += c;
 
 			while (c--) {
-				*pal++ = oldPalette.data[s + 0];
-				*pal++ = oldPalette.data[s + 1];
-				*pal++ = oldPalette.data[s + 2];
+				*pal++ = oldPalette.data()[s + 0];
+				*pal++ = oldPalette.data()[s + 1];
+				*pal++ = oldPalette.data()[s + 2];
 				s += 3;
 			}
 		} else {                       // top 2 bits are 00

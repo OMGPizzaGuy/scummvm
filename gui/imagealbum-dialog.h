@@ -34,7 +34,7 @@ class SeekableReadStream;
 
 namespace Graphics {
 
-struct Palette;
+class Palette;
 struct Surface;
 
 } // End of namespace Graphics

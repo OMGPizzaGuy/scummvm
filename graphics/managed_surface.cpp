@@ -261,7 +261,7 @@ void ManagedSurface::blitFrom(const ManagedSurface &src, const Common::Rect &src
 		transBlitFrom(src, srcRect, destPos);
 	else
 		blitFromInner(src._innerSurface, srcRect, Common::Rect(destPos.x, destPos.y, destPos.x + srcRect.width(),
-			destPos.y + srcRect.height()), src._palette ? src._palette->data : nullptr);
+			destPos.y + srcRect.height()), src._palette ? src._palette->data() : nullptr);
 }
 
 void ManagedSurface::blitFrom(const ManagedSurface &src, const Common::Rect &srcRect,
@@ -269,7 +269,7 @@ void ManagedSurface::blitFrom(const ManagedSurface &src, const Common::Rect &src
 	if (src._transparentColorSet)
 		transBlitFrom(src, srcRect, destRect, (uint32)-1);
 	else
-		blitFromInner(src._innerSurface, srcRect, destRect, src._palette ? src._palette->data : nullptr);
+		blitFromInner(src._innerSurface, srcRect, destRect, src._palette ? src._palette->data() : nullptr);
 }
 
 void ManagedSurface::blitFromInner(const Surface &src, const Common::Rect &srcRect,
@@ -502,8 +502,8 @@ void ManagedSurface::transBlitFrom(const ManagedSurface &src, const Common::Rect
 		const Surface *mask, bool maskOnly) {
 	if (transColor == (uint32)-1 && src._transparentColorSet)
 		transColor = src._transparentColor;
-	const byte *srcPalette = src._palette ? src._palette->data : nullptr;
-	const byte *dstPalette = _palette ? _palette->data : nullptr;
+	const byte *srcPalette = src._palette ? src._palette->data() : nullptr;
+	const byte *dstPalette = _palette ? _palette->data() : nullptr;
 
 	transBlitFromInner(src._innerSurface, srcRect, destRect, transColor, flipped, overrideColor,
 		srcAlpha, srcPalette, dstPalette, mask, maskOnly);
@@ -512,7 +512,7 @@ void ManagedSurface::transBlitFrom(const ManagedSurface &src, const Common::Rect
 void ManagedSurface::rawBlitFrom(const ManagedSurface &src, const Common::Rect &srcRect,
 				 const Common::Point &destPos) {
 	Common::Rect dstRect(destPos.x, destPos.y, destPos.x + srcRect.width(), destPos.y + srcRect.height());
-	blitFromInner(src._innerSurface, srcRect, dstRect, src._palette ? src._palette->data : nullptr);
+	blitFromInner(src._innerSurface, srcRect, dstRect, src._palette ? src._palette->data() : nullptr);
 }
 
 static uint findBestColor(const byte *palette, byte cr, byte cg, byte cb) {
@@ -848,7 +848,7 @@ void ManagedSurface::clearPalette() {
 }
 
 bool ManagedSurface::hasPalette() const {
-	return _palette && _palette->size > 0;
+	return _palette && _palette->size() > 0;
 }
 
 void ManagedSurface::grabPalette(byte *colors, uint start, uint num) const {

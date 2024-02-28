@@ -167,7 +167,7 @@ const byte* PacoDecoder::getPalette(){
 
 const byte* PacoDecoder::PacoVideoTrack::getPalette() const {
 	_dirtyPalette = false;
-	return _palette.data;
+	return _palette.data();
 }
 
 PacoDecoder::PacoVideoTrack::PacoVideoTrack(
@@ -250,7 +250,7 @@ void PacoDecoder::PacoVideoTrack::handlePalette(Common::SeekableReadStream *file
 	} else {
 		fileStream->readUint32BE(); // 4 bytes of 00
 		for (int i = 0; i < 256 * 3; i++){
-			_palette.data[i] = fileStream->readByte();
+			_palette.data()[i] = fileStream->readByte();
 		}
 	}
 	_dirtyPalette = true;

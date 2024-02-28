@@ -350,8 +350,8 @@ public:
 
 	byte inverter(byte src);
 
-	const byte *getPalette() { return _paletteLookup.getPalette().data; }
-	uint getPaletteSize() { return _paletteLookup.getPalette().size; }
+	const byte *getPalette() { return _paletteLookup.getPalette().data(); }
+	uint getPaletteSize() { return _paletteLookup.getPalette().size(); }
 
 	void renderZoomBox(bool redraw = false);
 	void addZoomBox(ZoomBox *box);
