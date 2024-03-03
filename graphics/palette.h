@@ -112,7 +112,7 @@ public:
 namespace Graphics {
 
 /**
- * @brief Simple struct for handling a palette data.
+ * @brief Simple class for handling a palette data.
  *
  * The palette data is specified in interleaved RGB format. That is, the
  * first byte of the memory block 'colors' points at is the red component
@@ -176,6 +176,15 @@ public:
 		}
 		return npos;
 	}
+
+	/**
+	 * Finds the index of the closest color from the palette.
+	 *
+	 * @param useNaiveAlg            if true, use a simpler algorithm
+	 *
+	 * @return the palette index
+	 */
+	byte findBestColor(byte r, byte g, byte b, bool useNaiveAlg = false) const;
 
 	void clear();
 

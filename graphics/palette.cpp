@@ -47,6 +47,45 @@ bool Palette::contains(const Palette& p) const {
 	return p._size <= _size && !memcmp(_data, p._data, p._size * 3);
 }
 
+byte Palette::findBestColor(byte cr, byte cg, byte cb, bool useNaiveAlg) const {
+	if (_size == 0) {
+		warning("Palette::findBestColor(): Palette was not set");
+		return 0;
+	}
+
+	uint bestColor = 0;
+	uint32 min = 0xFFFFFFFF;
+
+	if (useNaiveAlg) {
+		for (uint i = 0; i < _size; i++) {
+			int r = _data[3 * i + 0] - cr;
+			int g = _data[3 * i + 1] - cg;
+			int b = _data[3 * i + 2] - cb;
+
+			uint32 distWeighted = 3 * r * r + 5 * g * g + 2 * b * b;
+			if (distWeighted < min) {
+				bestColor = i;
+				min = distWeighted;
+			}
+		}
+	} else {
+		for (uint i = 0; i < _size; ++i) {
+			int rmean = (_data[3 * i + 0] + cr) / 2;
+			int r = _data[3 * i + 0] - cr;
+			int g = _data[3 * i + 1] - cg;
+			int b = _data[3 * i + 2] - cb;
+
+			uint32 distSquared = (((512 + rmean) * r * r) >> 8) + 4 * g * g + (((767 - rmean) * b * b) >> 8);
+			if (distSquared < min) {
+				bestColor = i;
+				min = distSquared;
+			}
+		}
+	}
+
+	return bestColor;
+}
+
 void Palette::clear() {
 	if (_size > 0)
 		memset(_data, 0, _size);
@@ -105,52 +144,11 @@ bool PaletteLookup::setPalette(const byte *palette, uint len) {
 }
 
 byte PaletteLookup::findBestColor(byte cr, byte cg, byte cb, bool useNaiveAlg) {
-	if (_palette.size() == 0) {
-		warning("PaletteLookup::findBestColor(): Palette was not set");
-		return 0;
-	}
-
-	uint bestColor = 0;
-	double min = 0xFFFFFFFF;
-
 	uint32 color = cr << 16 | cg << 8 | cb;
-
 	if (_colorHash.contains(color))
 		return _colorHash[color];
 
-	if (useNaiveAlg) {
-		const byte *palettePtr = _palette.data();
-
-		for (uint i = 0; i < _palette.size(); i++) {
-			int redSquareDiff = (cr - palettePtr[0]) * (cr - palettePtr[0]);
-			int greenSquareDiff = (cg - palettePtr[1]) * (cg - palettePtr[1]);
-			int blueSquareDiff = (cb - palettePtr[2]) * (cb - palettePtr[2]);
-
-			int weightedColorError = 3 * redSquareDiff + 5 * greenSquareDiff + 2 * blueSquareDiff;
-			if (weightedColorError < min) {
-				bestColor = i;
-				min = weightedColorError;
-			}
-
-			palettePtr += 3;
-		}
-	} else {
-		const byte *data = _palette.data();
-
-		for (uint i = 0; i < _palette.size(); ++i) {
-			int rmean = (*(data + 3 * i + 0) + cr) / 2;
-			int r = *(data + 3 * i + 0) - cr;
-			int g = *(data + 3 * i + 1) - cg;
-			int b = *(data + 3 * i + 2) - cb;
-
-			double dist = sqrt((((512 + rmean) * r * r) >> 8) + 4 * g * g + (((767 - rmean) * b * b) >> 8));
-			if (min > dist) {
-				bestColor = i;
-				min = dist;
-			}
-		}
-	}
-
+	uint bestColor = _palette.findBestColor(cr, cg, cb, useNaiveAlg);
 	_colorHash[color] = bestColor;
 
 	return bestColor;
