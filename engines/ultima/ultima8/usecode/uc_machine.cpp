@@ -164,6 +164,7 @@ void UCMachine::execProcess(UCProcess *p) {
 			  Kernel::get_instance()->getTickNum(), p->_pid, p->_itemNum, p->_type, p->_classId, p->_ip);
 	}
 
+	uint16 inserted = 0;
 	bool cede = false;
 	bool error = false;
 	bool go_until_cede = false;
@@ -324,6 +325,19 @@ void UCMachine::execProcess(UCProcess *p) {
 				error = true;
 			}
 			p->_stack.push2(assignString(str));
+
+			// Add other avatar cheat menu items
+			if (GAME_IS_U8 && p->_classId == 0x0401) {
+				if (!strcmp(str, "Jump ahead.")) {
+					p->_stack.push2(assignString("Create"));
+					p->_stack.push2(assignString("Destroy"));
+					p->_stack.push2(assignString("Give"));
+					p->_stack.push2(assignString("Take"));
+					p->_stack.push2(assignString("Contents"));
+					inserted = 5;
+				}
+			}
+
 			delete[] str;
 			break;
 		}
@@ -334,6 +348,13 @@ void UCMachine::execProcess(UCProcess *p) {
 			// (list is created in reverse order)
 			ui16a = cs->readByte();
 			ui16b = cs->readByte();
+
+			// Add other avatar cheat menu items
+			if (GAME_IS_U8 && p->_classId == 0x0401) {
+				ui16b += inserted;
+				inserted = 0;
+			}
+
 			UCList *l = new UCList(ui16a, ui16b);
 			p->_stack.addSP(ui16a * (ui16b - 1));
 			for (unsigned int i = 0; i < ui16b; i++) {
