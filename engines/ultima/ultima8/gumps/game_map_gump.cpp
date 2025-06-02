@@ -162,8 +162,7 @@ void GameMapGump::PaintThis(RenderSurface *surf, int32 lerp_factor, bool scaled)
 		                      _draggingFlags, Item::EXT_TRANSPARENT);
 	}
 
-
-	_displayList->PaintDisplayList(surf, _highlightItems, _showFootpads);
+	_displayList->PaintDisplayList(surf, _highlightItems, _showFootpads, map->getChunkSize());
 }
 
 // Trace a click, and return ObjId
